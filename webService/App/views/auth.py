@@ -1,10 +1,12 @@
 from flask import Blueprint, render_template, jsonify, request, flash, send_from_directory, flash, redirect, url_for
 from flask_jwt_extended import jwt_required, current_user, unset_jwt_cookies, set_access_cookies
 
-from.index import index_views
+# from.index import index_views
 
 from App.controllers import (
-    login
+    login,
+    get_all_event_json,
+    get_client_events_json    
 )
 
 auth_views = Blueprint('auth_views', __name__, template_folder='../templates')
@@ -24,6 +26,7 @@ def identify_page():
     return render_template('message.html', title="Identify", message=f"You are logged in as {current_user.id} - {current_user.username}")
     
 
+
 @auth_views.route('/login', methods=['POST'])
 def login_action():
     data = request.form
@@ -32,16 +35,18 @@ def login_action():
     if not token:
         flash('Bad username or password given'), 401
     else:
+        response = redirect("/")
         flash('Login Successful')
         set_access_cookies(response, token) 
     return response
 
 @auth_views.route('/logout', methods=['GET'])
 def logout_action():
-    response = redirect(request.referrer) 
     flash("Logged Out!")
+    response = redirect("/login") 
     unset_jwt_cookies(response)
     return response
+
 
 '''
 API Routes
@@ -67,3 +72,16 @@ def logout_api():
     response = jsonify(message="Logged Out!")
     unset_jwt_cookies(response)
     return response
+
+@auth_views.route('/api/client', methods=['GET'])
+@jwt_required()
+def get_client_action():
+    event  = get_all_event_json()
+    return jsonify(event)
+
+@auth_views.route('/api/stream', methods=['GET'])
+@jwt_required()
+def get_client_stream():
+    event  = get_client_events_json(current_user.username)
+    return jsonify(event)
+

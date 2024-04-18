@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webservice</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif; /* Apply the imported font */
+            background-color: #0A2558;
+            margin: 0;
+            padding: 0;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif; /* Apply the imported font */
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #0A2558;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-family: 'Poppins', sans-serif; /* Apply the imported font */
+        }
+
+        button:hover {
+            background-color: #174eb4;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Welcome to CCDEV Webservice</h2>
+        <form action="/login" method="POST">
+            <div class="input-group">
+                <input placeholder="username" value="bob" name="username" type="text" class="validate" required>
+                <label for="username">username</label>
+      
+            </div>
+            <div class="input-group">
+                <input placeholder="password"value="bobpass" name="password" type="password" class="validate" required>
+          <label for="password">Password</label>
+
+            </div>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+</body>
+</html>

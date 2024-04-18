@@ -1,23 +1,58 @@
-{% extends "layout.html" %}
-{% block title %}Not Authorized{% endblock %}
-{% block page %}Not Auhtorized{% endblock %}
-
-{{ super() }}
-
-{% block content %}
-<div class="container">
-    <div class="row" style="margin-top: 10%;">
-        <div class="col s12 m10 offset-m1">
-            <div class="card-content">
-                <h1>401 - Not Authorized</h1>
-                <p>You do not have permission to access this resource. Please check your credentials and try again.</p>
-                <p>{{error}}</p>
-            </div>
-            <div class="card-action">
-                <a href="/" class="waves-effect waves-light btn">Go Home</a>
-                <a href="javascript:history.back()" class="waves-effect waves-light btn">Go Back</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>401 - Not Authorized</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <style>
+        body {
+            background-color: #0A2558;
+        }
+        .container {
+            margin-top: 5%;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+            
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .btn {
+            border-radius: 20px;
+            font-size: 1rem;
+            background-color: #0A2558;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m8 offset-m2">
+                <div class="card">
+                    <div class="card-content center-align">
+                        <h1>401 - Not Authorized</h1>
+                        <p>You do not have permission to access this resource. Please check your credentials and try again.</p>
+                        <p>{{error}}</p>
+                    </div>
+                    <div class="card-action center-align">
+                        <a href="/login" class="waves-effect waves-light btn">Go to Login</a>
+                        <a href="javascript:history.back()" class="waves-effect waves-light btn grey">Go Back</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>
