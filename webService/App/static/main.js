@@ -7,10 +7,12 @@ async function getUserData(){
 function loadTable(users){
     const table = document.querySelector('#result');
     for(let user of users){
-        table.innerHTML += `<tr>
-            <td>${user.id}</td>
-            <td>${user.username}</td>
-        </tr>`;
+        let tr=document.createElement('tr');
+        let td1=document.createElement('td'), td2=document.createElement('td');
+        td1.innerText=user.id;
+        td2.innerText=user.username;
+        tr.append(td1,td2);
+        table.append(tr);
     }
 }
 
