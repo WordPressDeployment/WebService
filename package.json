@@ -1,0 +1,19 @@
+{
+  "name": "mcylia-webservice",
+  "version": "1.0.0",
+  "description": "The purpose of this web service is to display real time data about a pool of mCylia boxes that a user owns",
+  "main": "service.js",
+  "scripts": {
+    "test": "echo \"no tests required\" && exit 0"
+  },
+  "keywords": [
+    "mcylia",
+    "web",
+    "api"
+  ],
+  "author": "Y0ursTruly & chrisgwx",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "webject": "^1.3.9"
+  }
+}
