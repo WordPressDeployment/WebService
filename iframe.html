@@ -1,0 +1,16 @@
+<html>
+  <head>
+    <title>mCylia Boxes</title>
+    <script src="https://cdn.jsdelivr.net/npm/webject@latest/for_browser.min.js"></script>
+  </head>
+  <body>
+    <script>
+      window.onload=async function(){
+        const boxes={}, uri=`ws${location.protocol[4]==='s'?'s':''}://`+location.host, token=location.pathname.substring(1)
+        await connect(uri, token, function(){connect(uri,token,arguments.callee,boxes)}, boxes)
+        //the ideal is that boxes is a proxy so that html is rendered upon object changes :D
+        //but as of right now there is 0 display LOL
+      }
+    </script>
+  </body>
+</html>
