@@ -4,7 +4,9 @@
   "description": "The purpose of this web service is to display real time data about a pool of mCylia boxes that a user owns",
   "main": "service.js",
   "scripts": {
-    "test": "echo \"no tests required\" && exit 0"
+    "test": "echo \"no tests required\" && exit 0",
+    "build": "npm update",
+    "start": "node ."
   },
   "keywords": [
     "mcylia",
@@ -14,6 +16,7 @@
   "author": "Y0ursTruly & chrisgwx",
   "license": "UNLICENSED",
   "dependencies": {
+    "postgres": "^3.4.4",
     "webject": "^1.3.9"
   }
 }
