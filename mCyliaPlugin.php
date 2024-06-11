@@ -48,8 +48,7 @@ class Portal
                 // Make authenticated request to Flask API to get user information
                 $response = wp_remote_get('placeholder', array(
                     'headers' => array(
-                        'auth_head' => $token,
-                        'auth_value' => 'Bearer',
+                        'auth_head' => 'auth_value'                        
                     ),
                 ));
 
