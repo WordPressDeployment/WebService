@@ -42,6 +42,7 @@
         await connect(uri, token, function(){connect(uri,token,arguments.callee,boxes)}, boxes)
         //the ideal is that boxes is a proxy so that html is rendered upon object changes :D
         //but as of right now there is 0 display LOL
+        console.log(window.boxes=boxes,"incorrectly, the iframe code is being used to show this data, window.boxes is the actual data")
       }
     </script>
   </body>
