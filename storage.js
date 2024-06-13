@@ -1,5 +1,5 @@
 //is a simulation right now but will handle communication with the database
-const {DATABASE_URL}=process.env, postgres=require('postgres'), sql=postgres(DATABASE_URL)
+//const {DATABASE_URL}=process.env, postgres=require('postgres'), sql=postgres(DATABASE_URL)
 const simulation_boxes={mcylia_abcd:{online:false}}
 const simulation_users={undefined: {metadata:"whocares",boxes:{mcylia_abcd:simulation_boxes.mcylia_abcd}} }
 const all={simulation_boxes,simulation_users}
