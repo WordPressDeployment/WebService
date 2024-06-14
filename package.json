@@ -16,7 +16,7 @@
   "author": "Y0ursTruly & chrisgwx",
   "license": "UNLICENSED",
   "dependencies": {
-    "postgres": "^3.4.4",
+    "mysql": "^2.18.1",
     "webject": "^1.3.9"
   }
 }

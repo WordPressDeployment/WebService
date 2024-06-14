@@ -1,5 +1,8 @@
 //is a simulation right now but will handle communication with the database
-//const {DATABASE_URL}=process.env, postgres=require('postgres'), sql=postgres(DATABASE_URL)
+//const {DB_URL,DB_USER,DB_PASS}=process.env, DB_CLIENT=require('mysql')
+//const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}
+//const deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
+//const deviceEventSummaryLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventSummaryLogs'})
 const simulation_boxes={mcylia_abcd:{online:false}}
 const simulation_users={undefined: {metadata:"whocares",boxes:{mcylia_abcd:simulation_boxes.mcylia_abcd}} }
 const all={simulation_boxes,simulation_users}
