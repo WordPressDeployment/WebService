@@ -2,9 +2,78 @@
   <head>
     <title>mCylia Boxes</title>
     <script src="https://cdn.jsdelivr.net/npm/webject@latest/for_browser.min.js"></script>
+    <style>
+      body {
+        font-family: Arial;
+        color: white;
+      }
+      
+      .split {
+        height: 100%;
+        width: 50%;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        overflow-x: hidden;
+        padding-top: 20px;
+      }
+      
+      .left {
+        left: 0;
+        background-color: #111;
+      }
+      
+      .right {
+        right: 0;
+        background-color: red;
+      }
+      
+      .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+      
+      .centered img {
+        width: 150px;
+        border-radius: 50%;
+      }
+    </style>
   </head>
   <body>
     <script>
+      let db_proxies={ //receiver is unused, but it is a variable with the Proxy
+        events(arr){
+          const elem=document.createElement('div')
+          div.classList.add('split','left')
+          const pre=document.createElement('pre')
+          elem.appendChild(pre)
+          document.body.appendChild(elem)
+          return new Proxy(arr,{
+            get(target,prop,receiver){
+              pre.innerText=JSON.stringify(arr.at(-1),null,'\t')
+              return target[prop]
+            },
+            set(target,prop,value){return target[prop]=value}
+          })
+        },
+        summaries(arr){
+          const elem=document.createElement('div')
+          div.classList.add('split','right')
+          const pre=document.createElement('pre')
+          elem.appendChild(pre)
+          document.body.appendChild(elem)
+          return new Proxy(arr,{
+            get(target,prop,receiver){
+              pre.innerText=JSON.stringify(arr.at(-1),null,'\t')
+              return target[prop]
+            },
+            set(target,prop,value){return target[prop]=value}
+          })
+        }
+      }
       function box_proxy(obj,id){
         let box=document.createElement('div')
         let online=document.createElement('span')
@@ -37,7 +106,7 @@
         return new Proxy(obj,handler)
       }
       window.onload=async function(){
-        const boxes=boxes_proxy({}), uri=`ws${location.protocol[4]==='s'?'s':''}://`+location.host
+        const boxes=box_proxy({}), uri=`ws${location.protocol[4]==='s'?'s':''}://`+location.host
         const token=decodeURIComponent(location.pathname.substring(1))
         await connect(uri, token, function(){connect(uri,token,arguments.callee,boxes)}, boxes)
         //the ideal is that boxes is a proxy so that html is rendered upon object changes :D
