@@ -3,7 +3,6 @@ The purpose of this web service is to display real time data about a pool of mCy
 
 ## Dependencies
 * [Webject](https://www.npmjs.com/package/webject)
-* [ws](https://www.npmjs.com/package/ws)
 * [mysql](https://www.npmjs.com/package/mysql)
 
 ## Installing Dependencies
