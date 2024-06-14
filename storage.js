@@ -14,8 +14,8 @@ async function query(q,db){
   return await p
 }
 async function loadBoxes(){
-  await query('show tables',deviceEventLogs)
-  .filter(o=>Object.values(o)[0].startsWith('mCylia'))
+  (await query('show tables',deviceEventLogs))
+  .map(obj=>Object.values(obj)[0]).filter(text=>text.startsWith('mCylia'))
   .forEach(async function(id){
     boxes[id]={
       events:await query('select * from `'+id+'`',deviceEventLogs),
