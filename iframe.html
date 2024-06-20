@@ -84,7 +84,7 @@
       window.onload=async function(){
         const boxes=box_proxy({}), uri=`ws${location.protocol[4]==='s'?'s':''}://`+location.host
         const token=decodeURIComponent(location.pathname.substring(1))
-        await connect(uri, token, boxes)
+        window.boxes=await connect(uri, token, boxes)
         //the ideal is that boxes is a proxy so that html is rendered upon object changes :D
         //but as of right now there is 0 display LOL
       }
