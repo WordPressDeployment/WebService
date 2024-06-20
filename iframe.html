@@ -74,34 +74,11 @@
           })
         }
       }
-      function box_proxy(obj,id){
-        let box=document.createElement('div')
-        let online=document.createElement('span')
-        let b=document.createElement('b')
+      function box_proxy(obj){
         b.innerText=id
         const handler={
-          get(target,prop,receiver){return target[prop]},
-          set(target,prop,value,receiver){
-            target[prop]=value
-            if(prop==="online"){
-              if(value) online.innerText="online",online.style.backgroundColor="lightgreen";
-              else online.innerText="offline",online.style.backgroundColor="#FF7F00";
-            }
-          }
-        }
-        let proxy=new Proxy(obj,handler)
-        proxy.online=proxy.online //invoke the setter
-        box.append(b,online)
-        document.body.appendChild(box)
-        return proxy
-      }
-      function boxes_proxy(obj){
-        const handler={
-          get(target,prop,receiver){return target[prop]},
-          set(target,prop,value,receiver){
-            if(typeof value!=="object") return;
-            target[prop]=box_proxy(value,prop)
-          }
+          get(target,prop,receiver){ return target[prop] },
+          set(target,prop,value,receiver){ target[prop]=db_proxies[prop](value) }
         }
         return new Proxy(obj,handler)
       }
