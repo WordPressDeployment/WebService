@@ -75,7 +75,6 @@
         }
       }
       function box_proxy(obj){
-        b.innerText=id
         const handler={
           get(target,prop,receiver){ return target[prop] },
           set(target,prop,value,receiver){ target[prop]=db_proxies[prop](value) }
