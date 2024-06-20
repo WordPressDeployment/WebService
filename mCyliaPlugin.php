@@ -27,8 +27,8 @@ class Portal {
     public function ws_iframe_shortcode($atts) {
         $atts = shortcode_atts(
             array(
-                'auth_head' => '',   // AUTH_HEAD value
-                'auth_value' => '',  // AUTH_VALUE value
+                'auth_head' => 'god',   // AUTH_HEAD value
+                'auth_value' => 'isable',  // AUTH_VALUE value
                 'box_id' => '',      // mcylia-box ID
             ),
             $atts,
