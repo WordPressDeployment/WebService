@@ -9,18 +9,18 @@ const server=create_server(async function(req,res){
   const boxes=await get_user_boxes(req.headers['mcylia-box'])
   console.log(boxes)
   const token=webject.addToken(1,boxes)
-  webject.authTokens.get(token)._inactive=setTimeout(_=>webject.endToken(token),5e3)
+  //webject.authTokens.get(token)._inactive=setTimeout(_=>webject.endToken(token),5e3)
   //after 5 seconds without connecting, token is revoked
   return res.end(token) //so to access the link, it'd be webservice_site/what_was_returnedhere
 },8080)
 
 webject=serve({},server)
 webject.addListener("connect",function(ev){
-  clearTimeout(ev.token._inactive)
+  //clearTimeout(ev.token._inactive)
   ev.lock()
 })
 webject.addListener("disconnect",function(ev){
-  ev.token._inactive=setTimeout(_=>webject.endToken(ev.token.authToken),5e3)
+  //ev.token._inactive=setTimeout(_=>webject.endToken(ev.token.authToken),5e3)
   //after 5 seconds without connecting, token is revoked
   ev.unlock()
 })
