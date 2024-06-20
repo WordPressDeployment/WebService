@@ -8,7 +8,7 @@ const server=create_server(async function(req,res){
   if(req.headers[AUTH_HEAD]!==AUTH_VALUE) return res.end(""); //authentication barrier for creating new tokens
   const boxes=await get_user_boxes(req.headers['mcylia-box'])
   const token=webject.addToken(1,boxes)
-  webject.authTokens[token]._inactive=setTimeout(_=>webject.endToken(token),5e3)
+  webject.authTokens.get(token)._inactive=setTimeout(_=>webject.endToken(token),5e3)
   //after 5 seconds without connecting, token is revoked
   return res.end(token) //so to access the link, it'd be webservice_site/what_was_returnedhere
 },8080)
