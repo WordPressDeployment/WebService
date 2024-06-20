@@ -83,4 +83,4 @@ class Portal {
 
 // Instantiate the Portal class to initialize the plugin
 $portal = new Portal();
-add_shortcode('ws_iframe', array($portal, 'ws_iframe_shortcode'));
+
