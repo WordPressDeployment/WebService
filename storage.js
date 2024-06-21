@@ -24,7 +24,7 @@ async function loadBoxes(){
   })
 }
 loadBoxes()
-setInterval(loadBoxes,2e3) //check for new data every 60 seconds
+setInterval(loadBoxes,1e4) //check for new data every 60 seconds
 
 function get_user_boxes(box_id){
   return boxes[box_id]||Object.values(boxes)[0]
