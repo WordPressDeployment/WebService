@@ -10,7 +10,6 @@ const server=create_server(async function(req,res){
   }
   if(req.headers[AUTH_HEAD]!==AUTH_VALUE) return res.end(""); //authentication barrier for creating new tokens
   const boxes=await get_user_boxes(req.headers['mcylia-box'])
-  console.log(boxes)
   const token=webject.addToken(1,boxes)
   webject.authTokens.get(token)._inactive=setTimeout(_=>webject.endToken(token),1e4)
   //after 10 seconds without connecting, token is revoked
