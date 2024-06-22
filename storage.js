@@ -14,7 +14,7 @@ async function query(q,db){
   return await p
 }
 function queryString(id){
-  return 'select * from `'+id+'` where eventIndex=(select MAX(eventIndex) from `'+id+'`'
+  return 'select * from `'+id+'` where eventIndex=(select MAX(eventIndex) from `'+id+'`);'
 }
 async function loadBoxes(){
   (await query('show tables',deviceEventLogs))
