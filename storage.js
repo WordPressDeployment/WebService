@@ -13,13 +13,16 @@ async function query(q,db){
   db.query(q,function(err,result){resolve(err?[]:result)}) //soft error handling because yes
   return await p
 }
+function queryString(id){
+  return 'select * from `'+id+'` where eventIndex=(select MAX(eventIndex) from `'+id+'`'
+}
 async function loadBoxes(){
   (await query('show tables',deviceEventLogs))
   .map(obj=>Object.values(obj)[0]).filter(text=>text.startsWith('mCylia'))
   .forEach(async function(id){
     boxes[id]={
-      events:await query('select * from `'+id+'`',deviceEventLogs),
-      summaries:await query('select * from `'+id+'`',deviceEventSummaryLogs)
+      events:await query(queryString(id),deviceEventLogs),
+      summaries:await query(queryString(id),deviceEventSummaryLogs)
     }
   })
 }
