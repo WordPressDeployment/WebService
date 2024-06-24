@@ -1,93 +1,140 @@
+<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>mCylia Boxes</title>
-    <script src="https://cdn.jsdelivr.net/npm/webject@latest/for_browser.min.js"></script>
     <style>
-      body {
-        font-family: Arial;
-        color: white;
-      }
-      
-      .split {
-        height: 100%;
-        width: 50%;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-        overflow-x: hidden;
-        padding-top: 20px;
-      }
-      
-      .left {
-        left: 0;
-        background-color: #111;
-      }
-      
-      .right {
-        right: 0;
-        background-color: red;
-      }
-      
-      .centered {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        text-align: center;
-      }
-      
-      .centered img {
-        width: 150px;
-        border-radius: 50%;
-      }
+        body {
+            font-family: Arial, sans-serif;
+            color: white;
+            background-color: #181818;
+            margin: 0;
+            padding: 0;
+        }
+
+        .split {
+            height: 100%;
+            width: 50%;
+            position: fixed;
+            top: 0;
+            padding-top: 20px;
+        }
+
+        .left {
+            left: 0;
+            background-color: #111;
+            padding: 20px;
+        }
+
+        .right {
+            right: 0;
+            background-color: #202020;
+            padding: 20px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #282828;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .row:hover {
+            background-color: #383838;
+        }
+
+        .duration {
+            color: #CCCCCC;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background-color: #404040;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background-color: #1DB954;
+            border-radius: 5px;
+            width: 0%;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
+    <div class="split left"></div>
+    <div class="split right"></div>
+
     <script>
-      let db_proxies={ //receiver is unused, but it is a variable with the Proxy
-        events(arr){
-          const elem=document.createElement('div')
-          elem.classList.add('split','left')
-          const pre=document.createElement('pre')
-          elem.appendChild(pre)
-          document.body.appendChild(elem)
-          return new Proxy(arr,{
-            get(target,prop,receiver){
-              pre.innerText=JSON.stringify(arr.at(-1),null,'\t')
-              return target[prop]
+        let db_proxies = {
+            events(arr) {
+                const elem = document.querySelector('.left');
+                elem.innerHTML = '';
+                arr.forEach(event => {
+                    const row = document.createElement('div');
+                    row.classList.add('row');
+                    row.innerHTML = `<span>Event: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
+                    elem.appendChild(row);
+                    row.addEventListener('click', () => {
+                        db_proxies.showSummary(event);
+                    });
+                });
+
+                // sim for now
+                let currentIndex = 0;
+                setInterval(() => {
+                    const rows = elem.querySelectorAll('.row');
+                    rows.forEach((row, index) => {
+                        if (index === currentIndex % arr.length) {
+                            row.classList.add('playing');
+                        } else {
+                            row.classList.remove('playing');
+                        }
+                    });
+                    currentIndex++;
+                }, 2000);
+
+                return arr;
             },
-            set(target,prop,value){return target[prop]=value}
-          })
-        },
-        summaries(arr){
-          const elem=document.createElement('div')
-          elem.classList.add('split','right')
-          const pre=document.createElement('pre')
-          elem.appendChild(pre)
-          document.body.appendChild(elem)
-          return new Proxy(arr,{
-            get(target,prop,receiver){
-              pre.innerText=JSON.stringify(arr.at(-1),null,'\t')
-              return target[prop]
+            summaries(arr) {
+                const elem = document.querySelector('.right');
+                elem.innerHTML = '';
+                const summaryRow = document.createElement('div');
+                summaryRow.classList.add('row');
+                summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
+                elem.appendChild(summaryRow);
+
+                return arr;
             },
-            set(target,prop,value){return target[prop]=value}
-          })
+            showSummary(event) {
+                const summaries = window.boxes.summaries;
+                const eventSummary = summaries.find(summary => summary.eventIndex === event.eventIndex);
+                db_proxies.summaries([eventSummary]);
+            }
+        };
+
+        function box_proxy(obj) {
+            const handler = {
+                get(target, prop, receiver) {
+                    return target[prop];
+                },
+                set(target, prop, value) {
+                    target[prop] = db_proxies[prop](value);
+                    return true;
+                }
+            };
+            return new Proxy(obj, handler);
         }
-      }
-      function box_proxy(obj){
-        const handler={
-          get(target,prop,receiver){ return target[prop] },
-          set(target,prop,value,receiver){ target[prop]=db_proxies[prop](value) }
-        }
-        return new Proxy(obj,handler)
-      }
-      window.onload=async function(){
-        const boxes=box_proxy({}), uri=`ws${location.protocol[4]==='s'?'s':''}://`+location.host
-        const token=decodeURIComponent(location.pathname.substring(1))
-        window.boxes=await connect(uri, token, boxes)
-        //the ideal is that boxes is a proxy so that html is rendered upon object changes :D
-        //but as of right now there is 0 display LOL
-      }
+
+        window.onload = async function () {
+            const boxes = box_proxy({});
+            const uri = `ws${location.protocol[4] === 's' ? 's' : ''}://` + location.host;
+            const token = decodeURIComponent(location.pathname.substring(1));
+            window.boxes = await connect(uri, token, boxes);
+        };
     </script>
-  </body>
+</body>
 </html>
