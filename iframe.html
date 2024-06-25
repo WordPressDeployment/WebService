@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
         }
-
+    
         .split {
             height: 100%;
             width: 50%;
@@ -19,19 +19,19 @@
             top: 0;
             padding-top: 20px;
         }
-
+    
         .left {
             left: 0;
             background-color: #111;
             padding: 20px;
         }
-
+    
         .right {
             right: 0;
             background-color: #202020;
             padding: 20px;
         }
-
+    
         .row {
             display: flex;
             justify-content: space-between;
@@ -40,35 +40,48 @@
             background-color: #282828;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.5s ease, transform 0.3s ease;
         }
-
+    
         .row:hover {
-            background-color: #383838;
+            background-color: #3a3a3a;
+            transform: scale(1.02);
         }
-
+    
+        .row.playing {
+            background-color: #4CAF50; /* A green color for playing state */
+            animation: pulseAnimation 2s infinite;
+        }
+    
         .duration {
             color: #CCCCCC;
         }
-
+    
         .progress-bar-container {
             width: 100%;
             background-color: #404040;
             border-radius: 5px;
             margin-top: 10px;
         }
-
+    
         .progress-bar {
             height: 10px;
             background-color: #1DB954;
             border-radius: 5px;
             width: 0%;
+            transition: width 2s ease; /* Smooth transition for width change */
+        }
+    
+        @keyframes pulseAnimation {
+            0% { background-color: #4CAF50; }
+            50% { background-color: #5aaf60; }
+            100% { background-color: #4CAF50; }
         }
     </style>
 </head>
 <body>
     <div class="split left"></div>
     <div class="split right"></div>
-    <script src="storage.js"></script>
     <script>
         let db_proxies = {
             events(arr) {
