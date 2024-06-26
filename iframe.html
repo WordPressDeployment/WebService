@@ -79,7 +79,6 @@
         }
       nav{
         color: white;
-        background-color:  #1976D2;
         padding:0px 0px;
         height: 5%;
         text-align: center;
@@ -109,6 +108,7 @@
                 console.log(obj.state)
                 return new Proxy(obj,{
                     get(target,prop){
+                        box_state(target[prop]);
                         return target[prop]
                     },
                     set(target,prop,value){
