@@ -107,6 +107,7 @@
             rfid(obj){
                 console.log(obj.state)
                 box_state(obj.state)
+                window.obj=obj
                 return new Proxy(obj,{
                     get(target,prop){
                         return target[prop]
