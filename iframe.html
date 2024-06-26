@@ -82,6 +82,7 @@
         padding:0px 0px;
         height: 5%;
         text-align: center;
+        font-size: xx-large;
       }
       .online{background-color: lightgreen;}
       .offline{background-color: orangered;}
@@ -95,11 +96,11 @@
         function box_state(state){
             let nav=document.getElementById('state')
             if(state=="waiting"){
-              nav.class="offline";
+              nav.className="offline";
               nav.innerText="BOX IS OFFLINE";
             }
             else{
-              nav.class="online";
+              nav.className="online";
               nav.innerText="BOX IS ONLINE";
             }
         }
@@ -138,7 +139,6 @@
 
                 return new Proxy(arr,{
                     get(target,prop){
-                        //
                         return target[prop]
                     },
                     set(target,prop,value){
