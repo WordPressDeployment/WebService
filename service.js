@@ -14,7 +14,7 @@ const server=create_server(async function(req,res){
     return res.end(html); //for one user
   }
   if(req.headers[AUTH_HEAD]!==AUTH_VALUE) return res.end(""); //authentication barrier for creating new tokens
-  req.headers['mcylia-box']||='mCylia-M4-x0080_cylia868' //default mcylia-box header
+  //req.headers['mcylia-box']||='mCylia-M4-x0080_cylia868' //default mcylia-box header
   req.headers['start-and-end']||='1718211343452;1719420976624' //default start-and-end header
   const boxes=await get_user_boxes(req.headers['mcylia-box'])
   const token=webject.addToken(1,boxes)
