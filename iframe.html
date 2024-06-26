@@ -106,9 +106,9 @@
         let db_proxies = {
             rfid(obj){
                 console.log(obj.state)
+                box_state(obj.state)
                 return new Proxy(obj,{
                     get(target,prop){
-                        box_state(target[prop]);
                         return target[prop]
                     },
                     set(target,prop,value){
@@ -163,10 +163,12 @@
 
                 return new Proxy(arr,{
                     get(target,prop){
-                        summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
                         return target[prop]
                     },
-                    set(target,prop,value){return target[prop]=value}
+                    set(target,prop,value){
+                        summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
+                        return target[prop]=value
+                    }
                 });
             },
             showSummary(event) {
