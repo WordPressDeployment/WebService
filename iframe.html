@@ -87,15 +87,6 @@
             events(arr) {
                 const elem = document.querySelector('.left');
                 elem.innerHTML = '';
-                arr.forEach(event => {
-                    const row = document.createElement('div');
-                    row.classList.add('row');
-                    row.innerHTML = `<span>Event: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
-                    elem.appendChild(row);
-                    row.addEventListener('click', () => {
-                        db_proxies.showSummary(event);
-                    });
-                });
 
                 // sim for now
                 let currentIndex = 0;
@@ -111,7 +102,20 @@
                     currentIndex++;
                 }, 2000);
 
-                return arr;
+                return new Proxy(arr,{
+                    get(target,prop){
+                        const event=target[prop]
+                        const row = document.createElement('div');
+                        row.classList.add('row');
+                        row.innerHTML = `<span>Event: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
+                        elem.appendChild(row);
+                        row.addEventListener('click', () => {
+                            db_proxies.showSummary(event);
+                        });
+                        return event
+                    },
+                    set(target,prop,value){return target[prop]=value}
+                });
             },
             summaries(arr) {
                 const elem = document.querySelector('.right');
@@ -121,7 +125,13 @@
                 summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
                 elem.appendChild(summaryRow);
 
-                return arr;
+                return new Proxy(arr,{
+                    get(target,prop){
+                        summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
+                        return target[prop]
+                    },
+                    set(target,prop,value){return target[prop]=value}
+                });
             },
             showSummary(event) {
                 const summaries = window.boxes.summaries;
