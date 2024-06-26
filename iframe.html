@@ -104,17 +104,21 @@
 
                 return new Proxy(arr,{
                     get(target,prop){
-                        const event=target[prop]
+                        //
+                        return target[prop]
+                    },
+                    set(target,prop,value){
+                        const event=value
                         const row = document.createElement('div');
+                        console.log(value,row);
                         row.classList.add('row');
                         row.innerHTML = `<span>Event: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
                         elem.appendChild(row);
                         row.addEventListener('click', () => {
                             db_proxies.showSummary(event);
                         });
-                        return event
-                    },
-                    set(target,prop,value){return target[prop]=value}
+                        return target[prop]=value
+                    }
                 });
             },
             summaries(arr) {
