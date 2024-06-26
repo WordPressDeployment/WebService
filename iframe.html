@@ -159,14 +159,17 @@
                 elem.innerHTML = '';
                 const summaryRow = document.createElement('div');
                 summaryRow.classList.add('row');
+                console.log(JSON.stringify(arr))
                 summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
                 elem.appendChild(summaryRow);
 
                 return new Proxy(arr,{
                     get(target,prop){
+                        summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`; //why does this line work
                         return target[prop]
                     },
                     set(target,prop,value){
+                        console.log({value})
                         summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
                         return target[prop]=value
                     }
