@@ -84,6 +84,19 @@
     <div class="split right"></div>
     <script>
         let db_proxies = {
+            rfid(obj){
+                console.log(obj.state)
+                return new Proxy(obj,{
+                    get(target,prop){
+                        //
+                        return target[prop]
+                    },
+                    set(target,prop,value){
+                        if(prop==="state") console.log(value); //same as console.log(obj.state) above
+                        return target[prop]=value
+                    }
+                })
+            },
             events(arr) {
                 const elem = document.querySelector('.left');
                 elem.innerHTML = '';

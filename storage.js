@@ -7,8 +7,8 @@ const deviceEventSummaryLogs=DB_CLIENT.createConnection({...db_opts,database:'de
 deviceEventSummaryLogs.connect() //eventIndex,sysUUID,song_id,score,timestamp,duration,delta
 //deviceEventSummaryLogs also has a songGroups table which seems to be aggregated data from the rest of tables but less attributes per record
 //songGroups has sg_index,summary_eventIndex,songID,sysUUID
-//const devices=DB_CLIENT.createConnection({...db_opts,database:'devices'}) //rfidActivity: activity_id,UUID(unused),sysUUID,clientId(unused),state,timestamp
-//devices.connect()
+const devices=DB_CLIENT.createConnection({...db_opts,database:'devices'}) //rfidActivity: activity_id,UUID(unused),sysUUID,clientId(unused),state,timestamp
+devices.connect()
 //third db queued
 
 async function query(q,db){
@@ -30,7 +30,7 @@ async function loadBoxes(){
     boxes[id]={
       events:await query(queryString(id),deviceEventLogs),
       summaries:await query(queryString(id),deviceEventSummaryLogs),
-      //rfid:(await query(rfidQuery(id),devices))[0] //state: "powered on" or "waiting"
+      rfid:(await query(rfidQuery(id),devices))[0] //state: "powered on" or "waiting"
       //rfid object queued
     }
   })
