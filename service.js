@@ -1,11 +1,16 @@
 const create_server=require('./create_server.js'), get_user_boxes=require('./storage.js')
 const {serve}=require('webject'), {AUTH_HEAD,AUTH_VALUE}=process.env //as for now, admin route is unused
 let webject=null, fs=require('node:fs'), html=fs.readFileSync('iframe.html')
+function ATOB(data){
+  try{return atob(data)}
+  catch{return ""}
+}
 
 const server=create_server(async function(req,res){
   res.setHeader('Content-Type','text/html')
-  if( webject.authTokens.get(atob(req.url.substring(1))) ){
-    clearTimeout( webject.authTokens.get(atob(req.url.substring(1)))._inactive )
+  const iframe_token=ATOB(req.url.substring(1))
+  if( webject.authTokens.get(iframe_token) ){
+    clearTimeout( webject.authTokens.get(iframe_token)._inactive )
     return res.end(html); //for one user
   }
   if(req.headers[AUTH_HEAD]!==AUTH_VALUE) return res.end(""); //authentication barrier for creating new tokens
