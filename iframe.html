@@ -165,11 +165,10 @@
 
                 return new Proxy(arr,{
                     get(target,prop){
-                        summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`; //why does this line work
                         return target[prop]
                     },
                     set(target,prop,value){
-                        console.log({value})
+                        target[prop]=value
                         summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
                         return target[prop]=value
                     }
