@@ -16,7 +16,7 @@
             height: 100%;
             width: 50%;
             position: fixed;
-            top: 0;
+            top: 5%;
             padding-top: 20px;
         }
     
@@ -77,22 +77,42 @@
             50% { background-color: #5aaf60; }
             100% { background-color: #4CAF50; }
         }
+      nav{
+        color: white;
+        background-color:  #1976D2;
+        padding:0px 0px;
+        height: 5%;
+        text-align: center;
+      }
+      .online{background-color: lightgreen;}
+      .offline{background-color: orangered;}
     </style>
 </head>
 <body>
+    <nav id="state"></nav>
     <div class="split left"></div>
     <div class="split right"></div>
     <script>
+        function box_state(state){
+            let nav=document.getElementById('state')
+            if(state=="waiting"){
+              nav.class="offline";
+              nav.innerText="BOX IS OFFLINE";
+            }
+            else{
+              nav.class="online";
+              nav.innerText="BOX IS ONLINE";
+            }
+        }
         let db_proxies = {
             rfid(obj){
                 console.log(obj.state)
                 return new Proxy(obj,{
                     get(target,prop){
-                        //
                         return target[prop]
                     },
                     set(target,prop,value){
-                        if(prop==="state") console.log(value); //same as console.log(obj.state) above
+                        if(prop==="state") box_state(value);
                         return target[prop]=value
                     }
                 })
@@ -123,7 +143,6 @@
                     set(target,prop,value){
                         const event=value
                         const row = document.createElement('div');
-                        console.log(value,row);
                         row.classList.add('row');
                         row.innerHTML = `<span>Event: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
                         elem.appendChild(row);
@@ -173,7 +192,7 @@
         window.onload = async function () {
             const boxes = box_proxy({});
             const uri = `ws${location.protocol[4] === 's' ? 's' : ''}://` + location.host;
-            const token = decodeURIComponent(location.pathname.substring(1));
+            const token = atob(location.pathname.substring(1));
             window.boxes = await connect(uri, token, boxes);
         };
     </script>
