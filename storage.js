@@ -1,5 +1,5 @@
 const {DB_URL,DB_USER,DB_PASS}=process.env, DB_CLIENT=require('mysql')
-const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, boxes={}
+const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, cache=new Map()
 
 const deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
 deviceEventLogs.connect() //eventIndex,sourceTimeStamp,recogTimeStamp,sourceIndex,song_id,tm,tc,fm,fc,fMSE,tMSE,tinliers,finliers,samplePeriod,score,db,version,isNew
@@ -16,29 +16,46 @@ async function query(q,db){
   db.query(q,function(err,result){resolve(err?[]:result)}) //soft error handling because yes
   return await p
 }
-function queryString(id){
-  return 'select * from `'+id+'` where eventIndex=(select MAX(eventIndex) from `'+id+'`);'
+function eventQueryString(id,start,end){
+  let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
+  let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
+  return `select * from \`id\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
+}
+function summaryQueryString(id,start,end){
+  let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
+  let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
+  return `select * from \`id\` where timestamp between '${sql_start}' and '${sql_end}';`
 }
 function rfidQuery(id){
   return `select state, timestamp from rfidActivity where sysUUID = '${id}' and activity_id =
   (select MAX(activity_id) from devices.rfidActivity where sysUUID = '${id}');`
 }
-async function loadBoxes(){
-  (await query('show tables',deviceEventLogs))
-  .map(obj=>Object.values(obj)[0]).filter(text=>text.startsWith('mCylia'))
-  .forEach(async function(id){
-    boxes[id]={
-      events:await query(queryString(id),deviceEventLogs),
-      summaries:await query(queryString(id),deviceEventSummaryLogs),
-      rfid:(await query(rfidQuery(id),devices))[0] //state: "powered on" or "waiting"
-      //rfid object queued
-    }
-  })
+setInterval(function(){ cache.forEach(update) },4e3) //cached items updated every 4 seconds
+function parseTimes(time_range){
+  return time_range.split(';').map(Number)
 }
-loadBoxes()
-setInterval(loadBoxes,1e4) //check for new data every 10 seconds
+async function update(record,key){
+  const [box_id,time_range]=JSON.parse(key)
+  const [start,end]=parseTimes(time_range)
+  record.events=await query(eventQueryString(id,start,end),deviceEventLogs)
+  record.summaries=await query(summaryQueryString(id,start,end),deviceEventSummaryLogs)
+  let maxLength=Math.max(record.events.length,record.summaries.length)
+  //convert date values to long ints start
+  for(let i=0;i<maxLength;i++){
+    if(i<record.events.length){
+      record.events[i].sourceTimestamp-=0
+      record.events[i].recogTimestamp-=0
+    }
+    if(i<record.summaries.length) record.summaries[i].timestamp-=0;
+  }
+  //convert date values to long ints stop
+  record.rfid=(await query(rfidQuery(box_id),devices))[0] //state: "powered on" or "waiting"
+  return record
+}
 
 function get_user_boxes(box_id,time_range){
-  return boxes[box_id] //||Object.values(boxes)[0]
+  const key=JSON.stringify([box_id,time_range]), record=cache.get(key)||{}
+  if(record) return record;
+  return update(record,key) //promise returned, this is awaited in service.js
 }
-module.exports=get_user_boxes
+module.exports=get_box_info
