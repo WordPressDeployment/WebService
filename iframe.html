@@ -163,7 +163,7 @@
                     },
                     set(target,prop,value){
                         const summaryRow=document.createElement('div');
-                        sumaryRow.classList.add('row');
+                        summaryRow.classList.add('row');
                         summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(value, null, '\t')}</span>`;
                         elem.appendChild(summaryRow);
                         return target[prop]=value
