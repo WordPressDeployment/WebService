@@ -15,8 +15,9 @@ const server=create_server(async function(req,res){
   }
   if(req.headers[AUTH_HEAD]!==AUTH_VALUE) return res.end(""); //authentication barrier for creating new tokens
   req.headers['mcylia-box']||='mCylia-M4-x0080_cylia868' //default mcylia-box header
-  req.headers['start-and-end']||='1718211343452;1719420976624' //default start-and-end header
+  req.headers['start-and-end']||='1687876969175;1719420976624' //default start-and-end header
   const boxes=await get_box_info(req.headers['mcylia-box'],req.headers['start-and-end'])
+  console.log(boxes) //debug
   const token=webject.addToken(1,boxes)
   webject.authTokens.get(token)._inactive=setTimeout(_=>webject.endToken(token),1e4)
   //after 10 seconds without connecting, token is revoked
