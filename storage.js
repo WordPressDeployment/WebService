@@ -53,7 +53,7 @@ async function update(record,key){
 }
 setInterval(function(){ cache.forEach(update) },4e3) //cached items updated every 4 seconds
 
-function get_user_boxes(box_id,time_range){
+function get_box_info(box_id,time_range){
   const key=JSON.stringify([box_id,time_range]), record=cache.get(key)||{}
   if(record) return record;
   return update(record,key) //promise returned, this is awaited in service.js
