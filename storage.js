@@ -49,14 +49,13 @@ async function update(record,key){
   }
   //convert date values to long ints stop
   record.rfid=(await query(rfidQuery(box_id),devices))[0] //state: "powered on" or "waiting"
-  console.log({record})
   return record
 }
 setInterval(function(){ cache.forEach(update) },4e3) //cached items updated every 4 seconds
 
 function get_box_info(box_id,time_range){
-  const key=JSON.stringify([box_id,time_range]), record=cache.get(key)||{}
+  const key=JSON.stringify([box_id,time_range]), record=cache.get(key)
   if(record) return record;
-  return update(record,key) //promise returned, this is awaited in service.js
+  return update({},key) //promise returned, this is awaited in service.js
 }
 module.exports=get_box_info
