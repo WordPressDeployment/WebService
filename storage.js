@@ -19,12 +19,12 @@ async function query(q,db){
 function eventQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
-  return `select * from \`id\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
+  return `select * from \`${id}\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
 }
 function summaryQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
-  return `select * from \`id\` where timestamp between '${sql_start}' and '${sql_end}';`
+  return `select * from \`${id}\` where timestamp between '${sql_start}' and '${sql_end}';`
 }
 function rfidQuery(id){
   return `select state, timestamp from rfidActivity where sysUUID = '${id}' and activity_id =
