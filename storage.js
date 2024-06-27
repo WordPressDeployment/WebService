@@ -30,7 +30,6 @@ function rfidQuery(id){
   return `select state, timestamp from rfidActivity where sysUUID = '${id}' and activity_id =
   (select MAX(activity_id) from devices.rfidActivity where sysUUID = '${id}');`
 }
-setInterval(function(){ cache.forEach(update) },4e3) //cached items updated every 4 seconds
 function parseTimes(time_range){
   return time_range.split(';').map(Number)
 }
@@ -52,6 +51,7 @@ async function update(record,key){
   record.rfid=(await query(rfidQuery(box_id),devices))[0] //state: "powered on" or "waiting"
   return record
 }
+setInterval(function(){ cache.forEach(update) },4e3) //cached items updated every 4 seconds
 
 function get_user_boxes(box_id,time_range){
   const key=JSON.stringify([box_id,time_range]), record=cache.get(key)||{}
