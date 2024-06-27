@@ -106,7 +106,6 @@
         }
         let db_proxies = {
             rfid(obj){
-                console.log(obj.state)
                 box_state(obj.state)
                 window.obj=obj
                 return new Proxy(obj,{
@@ -124,7 +123,7 @@
                 elem.innerHTML = '';
 
                 // sim for now
-                let currentIndex = 0;
+                /*let currentIndex = 0;
                 setInterval(() => {
                     const rows = elem.querySelectorAll('.row');
                     rows.forEach((row, index) => {
@@ -135,7 +134,7 @@
                         }
                     });
                     currentIndex++;
-                }, 2000);
+                }, 2000);*/
 
                 return new Proxy(arr,{
                     get(target,prop){
@@ -145,11 +144,11 @@
                         const event=value
                         const row = document.createElement('div');
                         row.classList.add('row');
-                        row.innerHTML = `<span>Event: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
+                        row.innerHTML = `<span>Song ID: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
                         elem.appendChild(row);
-                        row.addEventListener('click', () => {
+                        /*row.addEventListener('click', () => {
                             db_proxies.showSummary(event);
-                        });
+                        });*/
                         return target[prop]=value
                     }
                 });
@@ -157,28 +156,25 @@
             summaries(arr) {
                 const elem = document.querySelector('.right');
                 elem.innerHTML = '';
-                const summaryRow = document.createElement('div');
-                summaryRow.classList.add('row');
-                console.log(JSON.stringify(arr))
-                summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
-                elem.appendChild(summaryRow);
 
                 return new Proxy(arr,{
                     get(target,prop){
                         return target[prop]
                     },
                     set(target,prop,value){
-                        target[prop]=value
-                        summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(arr.at(-1), null, '\t')}</span>`;
+                        const summaryRow=document.createElement('div');
+                        sumaryRow.classList.add('row');
+                        summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(value, null, '\t')}</span>`;
+                        elem.appendChild(summaryRow);
                         return target[prop]=value
                     }
                 });
-            },
+            }/*,
             showSummary(event) {
                 const summaries = window.boxes.summaries;
                 const eventSummary = summaries.find(summary => summary.eventIndex === event.eventIndex);
                 db_proxies.summaries([eventSummary]);
-            }
+            }*/
         };
 
         function box_proxy(obj) {
