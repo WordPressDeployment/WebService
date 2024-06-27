@@ -36,8 +36,8 @@ function parseTimes(time_range){
 async function update(record,key){
   const [box_id,time_range]=JSON.parse(key)
   const [start,end]=parseTimes(time_range)
-  record.events=await query(eventQueryString(id,start,end),deviceEventLogs)
-  record.summaries=await query(summaryQueryString(id,start,end),deviceEventSummaryLogs)
+  record.events=await query(eventQueryString(box_id,start,end),deviceEventLogs)
+  record.summaries=await query(summaryQueryString(box_id,start,end),deviceEventSummaryLogs)
   let maxLength=Math.max(record.events.length,record.summaries.length)
   //convert date values to long ints start
   for(let i=0;i<maxLength;i++){
