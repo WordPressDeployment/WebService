@@ -13,7 +13,7 @@ devices.connect()
 
 async function query(q,db){
   let resolve=null, p=new Promise(r=>resolve=r)
-  db.query(q,function(err,result){resolve(err?[]:result)}) //soft error handling because yes
+  db.query(q,function(err,result){if(err)console.log(err);resolve(err?[]:result)}) //soft error handling because yes
   return await p
 }
 function eventQueryString(id,start,end){
