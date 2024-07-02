@@ -141,11 +141,13 @@
                         return target[prop]
                     },
                     set(target,prop,value){
-                        const event=value
-                        const row = document.createElement('div');
-                        row.classList.add('row');
-                        row.innerHTML = `<span>Song ID: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
-                        elem.appendChild(row);
+                        setTimeout(function(){
+                            const event=value
+                            const row = document.createElement('div');
+                            row.classList.add('row');
+                            row.innerHTML = `<span>Song ID: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
+                            elem.appendChild(row);
+                        },5)
                         /*row.addEventListener('click', () => {
                             db_proxies.showSummary(event);
                         });*/
@@ -162,10 +164,12 @@
                         return target[prop]
                     },
                     set(target,prop,value){
-                        const summaryRow=document.createElement('div');
-                        summaryRow.classList.add('row');
-                        summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(value, null, '\t')}</span>`;
-                        elem.appendChild(summaryRow);
+                        setTimeout(function(){
+                            const summaryRow=document.createElement('div');
+                            summaryRow.classList.add('row');
+                            summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(value, null, '\t')}</span>`;
+                            elem.appendChild(summaryRow);
+                        },5)
                         return target[prop]=value
                     }
                 });
