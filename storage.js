@@ -17,7 +17,7 @@ deviceEventSummaryLogs.on('error',function(){
   deviceEventSummaryLogs.connect()
 })
 
-let devices=DB_CLIENT.createConnection({...db_opts,database:'devices'}) //rfidActivity: activity_id,UUID(unused),sysUUID,clientId(unused),state,timestamp
+let devices=DB_CLIENT.createConnection({...db_opts,database:'devices'}) //stateActivity: activity_id,sysUUID,clientId(unused),GPSstate,mCyliaHeartbeat,sourceTimestamp,hum,audioGood,powerMeas
 devices.connect()
 devices.on('error',function(){
   devices=DB_CLIENT.createConnection({...db_opts,database:'devices'})
@@ -40,9 +40,8 @@ function summaryQueryString(id,start,end){
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
   return `select * from \`${id}\` where timestamp between '${sql_start}' and '${sql_end}';`
 }
-function rfidQuery(id){
-  return `select state, timestamp from rfidActivity where sysUUID = '${id}' and activity_id =
-  (select MAX(activity_id) from devices.rfidActivity where sysUUID = '${id}');`
+function stateQuery(id){
+  return `select * from stateActivity where sourceTimestamp >= now(6) - interval 5 minute and sysUUID='${id}';`
 }
 function parseTimes(time_range){
   return time_range.split(';').map(Number)
@@ -62,7 +61,7 @@ async function update(record,key){
     if(i<record.summaries.length) record.summaries[i].timestamp-=0;
   }
   //convert date values to long ints stop
-  record.rfid=(await query(rfidQuery(box_id),devices))[0] //state: "powered on" or "waiting"
+  record.state=(await query(stateQuery(box_id),devices))[0] || {offline:true} //query exists or assumed offline
   //console.log(JSON.stringify(record).length)
   return record
 }
