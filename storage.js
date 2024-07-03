@@ -8,7 +8,7 @@ deviceEventLogs.on('error',function(){
   deviceEventLogs.connect()
 })
 
-const deviceEventSummaryLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventSummaryLogs'})
+let deviceEventSummaryLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventSummaryLogs'})
 deviceEventSummaryLogs.connect() //eventIndex,sysUUID,song_id,score,timestamp,duration,delta
 //deviceEventSummaryLogs also has a songGroups table which seems to be aggregated data from the rest of tables but less attributes per record
 //songGroups has sg_index,summary_eventIndex,songID,sysUUID
@@ -17,7 +17,7 @@ deviceEventSummaryLogs.on('error',function(){
   deviceEventSummaryLogs.connect()
 })
 
-const devices=DB_CLIENT.createConnection({...db_opts,database:'devices'}) //rfidActivity: activity_id,UUID(unused),sysUUID,clientId(unused),state,timestamp
+let devices=DB_CLIENT.createConnection({...db_opts,database:'devices'}) //rfidActivity: activity_id,UUID(unused),sysUUID,clientId(unused),state,timestamp
 devices.connect()
 devices.on('error',function(){
   devices=DB_CLIENT.createConnection({...db_opts,database:'devices'})
