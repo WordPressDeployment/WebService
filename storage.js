@@ -1,15 +1,29 @@
 const {DB_URL,DB_USER,DB_PASS}=process.env, DB_CLIENT=require('mysql')
 const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, cache=new Map()
 
-const deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
+let deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
 deviceEventLogs.connect() //eventIndex,sourceTimeStamp,recogTimeStamp,sourceIndex,song_id,tm,tc,fm,fc,fMSE,tMSE,tinliers,finliers,samplePeriod,score,db,version,isNew
+deviceEventLogs.on('error',function(){
+  deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
+  deviceEventLogs.connect()
+})
+
 const deviceEventSummaryLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventSummaryLogs'})
 deviceEventSummaryLogs.connect() //eventIndex,sysUUID,song_id,score,timestamp,duration,delta
 //deviceEventSummaryLogs also has a songGroups table which seems to be aggregated data from the rest of tables but less attributes per record
 //songGroups has sg_index,summary_eventIndex,songID,sysUUID
+deviceEventSummaryLogs.on('error',function(){
+  deviceEventSummaryLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventSummaryLogs'})
+  deviceEventSummaryLogs.connect()
+})
+
 const devices=DB_CLIENT.createConnection({...db_opts,database:'devices'}) //rfidActivity: activity_id,UUID(unused),sysUUID,clientId(unused),state,timestamp
 devices.connect()
-//third db queued
+devices.on('error',function(){
+  devices=DB_CLIENT.createConnection({...db_opts,database:'devices'})
+  devices.connect()
+})
+
 
 async function query(q,db){
   let resolve=null, p=new Promise(r=>resolve=r)
