@@ -6,6 +6,7 @@ deviceEventLogs.connect() //eventIndex,sourceTimeStamp,recogTimeStamp,sourceInde
 deviceEventLogs.on('error',function(){
   deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
   deviceEventLogs.connect()
+  deviceEventLogs.on('error',arguments.callee)
 })
 
 let deviceEventSummaryLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventSummaryLogs'})
@@ -15,6 +16,7 @@ deviceEventSummaryLogs.connect() //eventIndex,sysUUID,song_id,score,timestamp,du
 deviceEventSummaryLogs.on('error',function(){
   deviceEventSummaryLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventSummaryLogs'})
   deviceEventSummaryLogs.connect()
+  deviceEventSummaryLogs.on('error',arguments.callee)
 })
 
 let devices=DB_CLIENT.createConnection({...db_opts,database:'devices'}) //stateActivity: activity_id,sysUUID,clientId(unused),GPSstate,mCyliaHeartbeat,sourceTimestamp,hum,audioGood,powerMeas
@@ -22,6 +24,7 @@ devices.connect()
 devices.on('error',function(){
   devices=DB_CLIENT.createConnection({...db_opts,database:'devices'})
   devices.connect()
+  devices.on('error',arguments.callee)
 })
 
 
