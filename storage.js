@@ -1,5 +1,5 @@
 const {DB_URL,DB_USER,DB_PASS}=process.env, DB_CLIENT=require('mysql')
-const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, cache=new Map()
+const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, cache=new Map(), states=new Map()
 
 let deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
 deviceEventLogs.connect() //eventIndex,sourceTimeStamp,recogTimeStamp,sourceIndex,song_id,tm,tc,fm,fc,fMSE,tMSE,tinliers,finliers,samplePeriod,score,db,version,isNew
@@ -68,12 +68,38 @@ async function update(record,key){
   //console.log(JSON.stringify(record).length)
   return record
 }
-setInterval(function(){ cache.forEach(update) },4e3) //cached items updated every 4 seconds
+async function update_states(record,id){
+  if(id.includes(';')) return null; //do nothing (not a specific id)
+  let temp=await query(stateQuery(id),devices)
+  for(let i=0;i<temp.length;i++) record[i]=temp[i];
+  record.length=temp.length;
+  return record;
+}
+setInterval(function(){
+  cache.forEach(update)
+  states.forEach(update_states)
+},4e3) //cached items updated every 4 seconds
 
-function get_box_info(box_id,time_range){
+async function get_box_info(box_id,time_range){
   if(!box_id || !time_range) return {}; //nothing returned when nothing is asked for
   const key=JSON.stringify([box_id,time_range]), record=cache.get(key)
   if(record) return record;
-  return update({},key) //promise returned, this is awaited in service.js
+  record=await update({},key)
+  cache.set(key,record)
+  return record
 }
-module.exports=get_box_info
+async function get_state_info(header){
+  if(states.has(header)) return states.get(header);
+  const ids=header.split(';'), state_info=Array(ids.length);
+  for(let i=0;i<ids.length;i++){
+    let record=states.get(ids[i])
+    if(!record){
+      record=await update_states([],ids[i])
+      states.set(record,ids[i])
+    }
+    state_info[i]=record
+  }
+  states.set(header,state_info)
+  return state_info
+}
+module.exports={get_box_info,get_state_info}
