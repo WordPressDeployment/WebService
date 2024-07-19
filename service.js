@@ -19,6 +19,7 @@ const server=create_server(async function(req,res){
   const data=req.headers['state_activity']?
     await get_state_info(req.headers['state_activity']):
     await get_box_info(req.headers['mcylia-box'],req.headers['start-and-end'])
+  //console.log(data,req.headers) //to toggle commented line for testing
   const token=webject.addToken(1,data)
   webject.authTokens.get(token)._inactive=setTimeout(_=>webject.endToken(token),1e4)
   //after 10 seconds without connecting, token is revoked

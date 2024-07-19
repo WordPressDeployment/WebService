@@ -95,7 +95,7 @@
     <script>
         function box_state(state){
             let nav=document.getElementById('state')
-            if(state.offline){
+            if(!state||state.offline){
               nav.className="offline";
               nav.innerText="BOX IS OFFLINE";
             }
