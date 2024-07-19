@@ -82,7 +82,7 @@ setInterval(function(){
 
 async function get_box_info(box_id,time_range){
   if(!box_id || !time_range) return {}; //nothing returned when nothing is asked for
-  const key=JSON.stringify([box_id,time_range]), record=cache.get(key)
+  let key=JSON.stringify([box_id,time_range]), record=cache.get(key)
   if(record) return record;
   record=await update({},key)
   cache.set(key,record)
