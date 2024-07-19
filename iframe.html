@@ -164,9 +164,10 @@
 
         window.onload = async function () {
             const boxes = box_proxy({});
+            window.boxes=boxes
             const uri = `ws${location.protocol[4] === 's' ? 's' : ''}://` + location.host;
             const token = atob(location.pathname.substring(1));
-            window.boxes = await connect(uri, token, boxes);
+            await connect(uri, token, boxes);
             setInterval(_=>box_state(boxes.state))
         };
     </script>
