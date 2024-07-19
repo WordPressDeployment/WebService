@@ -58,10 +58,11 @@ async function update(record,key){
   //convert date values to long ints start
   for(let i=0;i<maxLength;i++){
     if(i<record.events.length){
-      record.events[i].sourceTimestamp-=0
-      record.events[i].recogTimestamp-=0
+      if(typeof record.events[i].sourceTimestamp!=="number") record.events[i].sourceTimestamp-=0;
+      if(typeof record.events[i].recogTimestamp!=="number")record.events[i].recogTimestamp-=0;
     }
-    if(i<record.summaries.length) record.summaries[i].timestamp-=0;
+    if(i<record.summaries.length)
+      if(typeof record.summaries[i].timestamp!=="number") record.summaries[i].timestamp-=0;
   }
   //convert date values to long ints stop
   record.state=(await query(stateQuery(box_id),devices))[0] || {offline:true} //query exists or assumed offline
