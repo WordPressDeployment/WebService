@@ -154,7 +154,8 @@
                     return target[prop];
                 },
                 set(target, prop, value) {
-                    target[prop] = db_proxies[prop](value);
+                    try{target[prop] = db_proxies[prop](value);}
+                    catch{console.warn(prop)}
                     return true;
                 }
             };
