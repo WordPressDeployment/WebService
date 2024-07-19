@@ -17,6 +17,6 @@
   "license": "UNLICENSED",
   "dependencies": {
     "mysql": "^2.18.1",
-    "webject": "^1.4.41"
+    "webject": "^1.4.45"
   }
 }
