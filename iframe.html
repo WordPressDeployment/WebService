@@ -114,7 +114,7 @@
                         return target[prop]
                     },
                     set(target,prop,value){
-                        if(!target[prop]) return target[prop]=value; //don't double append on reconnections
+                        if(target[prop]) return target[prop]=value; //don't double append on reconnections
                         setTimeout(function(){
                             const event=value
                             const row = document.createElement('div');
@@ -135,7 +135,7 @@
                         return target[prop]
                     },
                     set(target,prop,value){
-                        if(!target[prop]) return target[prop]=value; //don't double append on reconnections
+                        if(target[prop]) return target[prop]=value; //don't double append on reconnections
                         setTimeout(function(){
                             const summaryRow=document.createElement('div');
                             summaryRow.classList.add('row');
