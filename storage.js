@@ -1,5 +1,5 @@
 const {DB_URL,DB_USER,DB_PASS}=process.env, DB_CLIENT=require('mysql')
-const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, cache=new Map(), states=new Map()
+const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, cache=new Map(), states=new Map(), state_headers=new Map()
 
 let deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
 deviceEventLogs.connect() //eventIndex,sourceTimeStamp,recogTimeStamp,sourceIndex,song_id,tm,tc,fm,fc,fMSE,tMSE,tinliers,finliers,samplePeriod,score,db,version,isNew
@@ -90,7 +90,7 @@ async function get_box_info(box_id,time_range){
   return record
 }
 async function get_state_info(header){
-  if(states.has(header)) return states.get(header);
+  if(state_headers.has(header)) return state_headers.get(header);
   const ids=header.split(';'), state_info=Array(ids.length);
   for(let i=0;i<ids.length;i++){
     let record=states.get(ids[i])
@@ -101,7 +101,7 @@ async function get_state_info(header){
     state_info[i]=record
   }
   const events={state_info}
-  states.set(header,events)
+  state_headers.set(header,events)
   return events
 }
 module.exports={get_box_info,get_state_info}
