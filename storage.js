@@ -100,7 +100,8 @@ async function get_state_info(header){
     }
     state_info[i]=record
   }
-  states.set(header,state_info)
-  return state_info
+  const events={state_info}
+  states.set(header,events)
+  return events
 }
 module.exports={get_box_info,get_state_info}
