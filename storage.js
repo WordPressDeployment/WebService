@@ -82,7 +82,7 @@ setInterval(function(){
 },4e3) //cached items updated every 4 seconds
 
 async function get_box_info(box_id,time_range){
-  //console.log({box_id,time_range}) //show everything
+  console.log({box_id,times: parseTimes(time_range).map(a=>new Date(a).toGMTString()) }) //show everything
   if(!box_id || !time_range) return {}; //nothing returned when nothing is asked for
   if(!box_id.startsWith('mCylia-')) return {}; //box-id validation
   let [start,end]=time_range.split(';')
@@ -91,6 +91,7 @@ async function get_box_info(box_id,time_range){
   let key=JSON.stringify([box_id,time_range]), record=cache.get(key)
   if(record) return record;
   record=await update({},key)
+  console.log(record)
   cache.set(key,record)
   return record
 }
