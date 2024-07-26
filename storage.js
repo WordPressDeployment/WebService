@@ -82,6 +82,7 @@ setInterval(function(){
 },4e3) //cached items updated every 4 seconds
 
 async function get_box_info(box_id,time_range){
+  console.log({box_id,time_range}) //show everything
   if(!box_id || !time_range) return {}; //nothing returned when nothing is asked for
   if(!box_id.startsWith('mCylia-')) return {}; //box-id validation
   let [start,end]=time_range.split(';')
