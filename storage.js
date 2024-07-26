@@ -85,6 +85,7 @@ setInterval(function(){
 },4e3) //cached items updated every 4 seconds
 
 async function get_box_info(box_id,time_range){
+  console.log({box_id,time_range})
   if(!box_id || !time_range) return {}; //nothing returned when nothing is asked for
   if(!box_id.startsWith('mCylia-')) return {}; //box-id validation
   let [start,end]=time_range.split(';')
@@ -99,7 +100,7 @@ async function get_box_info(box_id,time_range){
   return record
 }
 async function get_state_info(header){
-  //console.log(header)
+  console.log({listing:header}) //listing
   if(state_headers.has(header)) return state_headers.get(header);
   const ids=header.split(';'), state_info=Array(ids.length);
   //if(ids.some(header=>!header.startsWith('mCylia-'))) return {state_info}; //sysUUID validation
