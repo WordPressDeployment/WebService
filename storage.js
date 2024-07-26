@@ -65,8 +65,8 @@ async function update(record,key){
       if(typeof record.summaries[i].timestamp!=="number") record.summaries[i].timestamp-=0;
   }
   //convert date values to long ints stop
-  record.state=(await query(stateQuery(box_id),devices))[0] || {offline:true} //query exists or assumed offline
-  //console.log(JSON.stringify(record).length)
+  if(end<=Date.now()) record.state={offline:true};
+  else record.state=(await query(stateQuery(box_id),devices))[0] || {offline:true}; //query exists or assumed offline
   return record
 }
 async function update_states(record,id){
