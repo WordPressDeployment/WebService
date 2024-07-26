@@ -15,7 +15,7 @@ const server=create_server(async function(req,res){
     clearTimeout( webject.authTokens.get(iframe_token)._inactive )
     return res.end(html); //for one user
   }
-  if(req.headers[AUTH_HEAD]!==AUTH_VALUE) return res.end(""); //authentication barrier for creating new tokens
+  if(req.headers[AUTH_HEAD.toLowerCase()]!==AUTH_VALUE) return res.end(""); //authentication barrier for creating new tokens
   //req.headers['mcylia-box']||='mCylia-M4-x0080_cylia868' //default mcylia-box header
   //req.headers['start-and-end']||='1707797694892;1707970494892' //default start-and-end header
   const data=req.headers['state_activity']?
