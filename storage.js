@@ -78,7 +78,7 @@ async function update_states(record,id){
 }
 setInterval(function(){
   cache.forEach(update)
-  state_headers.forEach(update_states)
+  states.forEach(update_states)
 },4e3) //cached items updated every 4 seconds
 
 async function get_box_info(box_id,time_range){
