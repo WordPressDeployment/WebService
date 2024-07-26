@@ -47,7 +47,10 @@ function stateQuery(id){
   return `select * from stateActivity where sourceTimestamp >= now(6) - interval 5 minute and sysUUID='${id}';`
 }
 function parseTimes(time_range){
-  return time_range.split(';').map(Number)
+  if(!time_range) return [0,0];
+  const times=time_range.split(';')
+  if(times.length!==2) return [0,0];
+  return times.map(Number)
 }
 async function update(record,key){
   const [box_id,time_range]=JSON.parse(key)
@@ -82,12 +85,12 @@ setInterval(function(){
 },4e3) //cached items updated every 4 seconds
 
 async function get_box_info(box_id,time_range){
-  console.log({box_id,times: parseTimes(time_range).map(a=>new Date(a).toGMTString()) }) //show everything
   if(!box_id || !time_range) return {}; //nothing returned when nothing is asked for
   if(!box_id.startsWith('mCylia-')) return {}; //box-id validation
   let [start,end]=time_range.split(';')
   if(!start || !end) return {};
   if(Number(start)>=Number(end)) return {};
+  console.log({box_id,times: parseTimes(time_range).map(a=>new Date(a).toGMTString()) }) //show everything
   let key=JSON.stringify([box_id,time_range]), record=cache.get(key)
   if(record) return record;
   record=await update({},key)
@@ -99,8 +102,12 @@ async function get_state_info(header){
   //console.log(header)
   if(state_headers.has(header)) return state_headers.get(header);
   const ids=header.split(';'), state_info=Array(ids.length);
-  if(ids.some(header=>!header.startsWith('mCylia-'))) return {state_info}; //sysUUID validation
+  //if(ids.some(header=>!header.startsWith('mCylia-'))) return {state_info}; //sysUUID validation
   for(let i=0;i<ids.length;i++){
+    if(!(ids[i].startsWith('mCylia-'))){
+      state_info[i]=[];
+      continue; //individual row sysUUID validation instead for now
+    }
     let record=states.get(ids[i])
     if(!record){
       record=await update_states([],ids[i])
