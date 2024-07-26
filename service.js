@@ -8,6 +8,7 @@ function ATOB(data){
 
 const server=create_server(async function(req,res){
   console.log('I got pinged')
+  if(req.headers['state_activity']||req.headers['mcylia-box']) console.log(req.headers);
   res.setHeader('Content-Type','text/html')
   const iframe_token=ATOB(req.url.substring(1))
   if( webject.authTokens.get(iframe_token) ){
