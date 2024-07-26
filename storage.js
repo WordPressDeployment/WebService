@@ -92,6 +92,7 @@ async function get_box_info(box_id,time_range){
   if(record) return record;
   record=await update({},key)
   cache.set(key,record)
+  console.log('made it here')
   return record
 }
 async function get_state_info(header){
