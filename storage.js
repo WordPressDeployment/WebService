@@ -93,7 +93,7 @@ async function get_box_info(box_id,time_range){
 async function get_state_info(header){
   if(state_headers.has(header)) return state_headers.get(header);
   const ids=header.split(';'), state_info=Array(ids.length);
-  if(headers.some(header=>!header.startsWith('mCylia-'))) return {state_info}; //sysUUID validation
+  if(ids.some(header=>!header.startsWith('mCylia-'))) return {state_info}; //sysUUID validation
   for(let i=0;i<ids.length;i++){
     let record=states.get(ids[i])
     if(!record){
