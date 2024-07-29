@@ -54,7 +54,8 @@ async function update(record,key){
   const [start,end]=parseTimes(time_range)
   const events=await query(eventQueryString(box_id,start,end))
   const summaries=await query(summaryQueryString(box_id,start,end))
-  if(!record.events) console.log(eventQueryString(box_id,start,end));
+  //if(!record.events) console.log(eventQueryString(box_id,start,end));
+  if(!record.summaries) console.log(summaryQueryString(box_id,start,end));
   record.events ||= [];
   record.summaries ||= [];
   for(let i=record.events.length;i<events.length;i++){
