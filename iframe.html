@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>mCylia Boxes</title>
-    <script src="https://cdn.jsdelivr.net/npm/webject@latest/for_browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/webject@1.4.8/for_browser.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,65 +12,26 @@
             padding: 0;
         }
     
-        .split {
-            height: 100%;
-            width: 50%;
-            position: fixed;
-            top: 5%;
-            padding-top: 20px;
+        
+        
+    
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+
+        tr:nth-child(even) {
+          background-color: #dddddd;
         }
     
-        .left {
-            left: 0;
-            background-color: #111;
-            padding: 20px;
-        }
-    
-        .right {
-            right: 0;
-            background-color: #202020;
-            padding: 20px;
-        }
-    
-        .row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #282828;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.5s ease, transform 0.3s ease;
-        }
-    
-        .row:hover {
-            background-color: #3a3a3a;
-            transform: scale(1.02);
-        }
-    
-        .row.playing {
-            background-color: #4CAF50; /* A green color for playing state */
-            animation: pulseAnimation 2s infinite;
-        }
-    
-        .duration {
-            color: #CCCCCC;
-        }
-    
-        .progress-bar-container {
-            width: 100%;
-            background-color: #404040;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-    
-        .progress-bar {
-            height: 10px;
-            background-color: #1DB954;
-            border-radius: 5px;
-            width: 0%;
-            transition: width 2s ease; /* Smooth transition for width change */
-        }
+        
     
         @keyframes pulseAnimation {
             0% { background-color: #4CAF50; }
@@ -90,11 +51,18 @@
 </head>
 <body>
     <nav id="state"></nav>
-    <div class="split left"></div>
-    <div class="split right"></div>
+    <table id="device-data">
+        <tr>
+            <th>songID</th>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Start Time</th>
+            <th>Time Played</th>
+        </tr>
+    </table>
     <script>
+        let nav=document.getElementById('state')
         function box_state(state){
-            let nav=document.getElementById('state')
             if(!state||state.offline){
               nav.className="offline";
               nav.innerText="BOX IS OFFLINE";
@@ -104,71 +72,15 @@
               nav.innerText="BOX IS ONLINE";
             }
         }
-        let db_proxies = {
-            state(obj){return obj}, //just placeholder now
-            events(arr) {
-                const elem = document.querySelector('.left');
-                elem.innerHTML = '';
-                return new Proxy(arr,{
-                    get(target,prop){
-                        return target[prop]
-                    },
-                    set(target,prop,value){
-                        if(target[prop]) return target[prop]=value; //don't double append on reconnections
-                        setTimeout(function(){
-                            const event=value
-                            const row = document.createElement('div');
-                            row.classList.add('row');
-                            row.innerHTML = `<span>Song ID: ${event.song_id}</span><span class="duration">${event.duration || '00:00'}</span>`;
-                            elem.appendChild(row);
-                        },5)
-                        return target[prop]=value
-                    }
-                });
-            },
-            summaries(arr) {
-                const elem = document.querySelector('.right');
-                elem.innerHTML = '';
-
-                return new Proxy(arr,{
-                    get(target,prop){
-                        return target[prop]
-                    },
-                    set(target,prop,value){
-                        if(target[prop]) return target[prop]=value; //don't double append on reconnections
-                        setTimeout(function(){
-                            const summaryRow=document.createElement('div');
-                            summaryRow.classList.add('row');
-                            summaryRow.innerHTML = `<span>Summary: ${JSON.stringify(value, null, '\t')}</span>`;
-                            elem.appendChild(summaryRow);
-                        },5)
-                        return target[prop]=value
-                    }
-                });
-            }
-        };
-
-        function box_proxy(obj) {
-            const handler = {
-                get(target, prop, receiver) {
-                    return target[prop];
-                },
-                set(target, prop, value) {
-                    try{target[prop] = db_proxies[prop](value);}
-                    catch{console.warn(prop)}
-                    return true;
-                }
-            };
-            return new Proxy(obj, handler);
-        }
+        //document.querySelector('.left');
+        //document.querySelector('.right');
 
         window.onload = async function () {
-            const boxes = box_proxy({});
-            window.boxes=boxes
+            window.boxes = {}
             const uri = `ws${location.protocol[4] === 's' ? 's' : ''}://` + location.host;
             const token = atob(location.pathname.substring(1));
             await connect(uri, token, boxes);
-            setInterval(_=>box_state(boxes.state))
+            setInterval(_=>box_state(boxes.state),200)
         };
     </script>
 </body>
