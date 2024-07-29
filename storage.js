@@ -56,7 +56,7 @@ async function update(record,key){
   const summaries=await query(summaryQueryString(box_id,start,end))
   record.events ||= [];
   record.summaries ||= [];
-  for(let i=record.events.length;i<events.length){
+  for(let i=record.events.length;i<events.length;i++){
     record.events[i] = events[i];
     record.events[i].sourceTimestamp -= 0; //convert date value to long int
     record.events[i].recogTimestamp -= 0; //convert date value to long int
