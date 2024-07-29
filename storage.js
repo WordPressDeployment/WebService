@@ -32,13 +32,13 @@ function eventQueryString(id,start,end){
   let sql_start=`SELECT MAX(timestamp) from deviceEventSummaryLogs.\`${id}\` where timestamp <= '${ev_start}'`
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
   //return `select * from \`${id}\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
-  return `SELECT ds.eventIndex as eventIndex, ds.song_id as song_id, ds.sourceIndex as sourceIndex, ds.sourceTimestamp as sourceTimestamp, s.title, s.artist, s.album, s.genre, (tinliers/6*finliers/50) as score FROM deviceEventLogs.\`${id}\` WHERE sourceTimestamp BETWEEN (${sql_start}) and '${sql_end}' as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id ORDER BY ds.sourceTimestamp DESC;`
+  return `SELECT ds.eventIndex as eventIndex, ds.song_id as song_id, ds.sourceIndex as sourceIndex, ds.sourceTimestamp as sourceTimestamp, s.title, s.artist, s.album, s.genre, (tinliers/6*finliers/50) as score FROM deviceEventLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE sourceTimestamp BETWEEN (${sql_start}) and '${sql_end}' ORDER BY ds.sourceTimestamp DESC;`
 }
 function summaryQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
   //return `select * from \`${id}\` where timestamp between '${sql_start}' and '${sql_end}';`
-  return `SELECT ds.eventIndex as eventIndex, ds.sysUUID as sysUUID, ds.song_id as song_id, ds.score as score, ds.timestamp as timestamp, (ds.duration*ds.delta) as seconds FROM deviceEventSummaryLogs.\`${id}\` WHERE  timestamp BETWEEN '${sql_start}' and '${sql_end}' as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id ORDER BY ds.timestamp DESC;`
+  return `SELECT ds.eventIndex as eventIndex, ds.sysUUID as sysUUID, ds.song_id as song_id, ds.score as score, ds.timestamp as timestamp, (ds.duration*ds.delta) as seconds FROM deviceEventSummaryLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE  timestamp BETWEEN '${sql_start}' and '${sql_end}' ORDER BY ds.timestamp DESC;`
 }
 function stateQuery(id){
   return `select * from devices.stateActivity where sourceTimestamp >= now(6) - interval 5 minute and sysUUID='${id}';`
