@@ -28,9 +28,9 @@ async function query(q){
   return await p
 }
 function eventQueryString(id,start,end){
-  let ev_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
-  let sql_start=`SELECT MAX(timestamp) from deviceEventSummaryLogs.\`${id}\` where timestamp <= '${ev_start}'`
+  //let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
+  let sql_start=`SELECT MAX(timestamp) from deviceEventSummaryLogs.\`${id}\` where timestamp <= '${sql_end}'`
   //return `select * from \`${id}\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
   return `SELECT ds.eventIndex as eventIndex, ds.song_id as song_id, ds.sourceIndex as sourceIndex, ds.sourceTimestamp as sourceTimestamp, ds.recogTimestamp as recogTimestamp, s.title, s.artist, s.album, s.genre, (tinliers/6*finliers/50) as score FROM deviceEventLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE sourceTimestamp BETWEEN (${sql_start}) and '${sql_end}' ORDER BY ds.sourceTimestamp DESC;`
 }
@@ -54,6 +54,7 @@ async function update(record,key){
   const [start,end]=parseTimes(time_range)
   const events=await query(eventQueryString(box_id,start,end))
   const summaries=await query(summaryQueryString(box_id,start,end))
+  if(!record.events) console.log(eventQueryString(box_id,start,end));
   record.events ||= [];
   record.summaries ||= [];
   for(let i=record.events.length;i<events.length;i++){
