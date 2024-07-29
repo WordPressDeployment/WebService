@@ -1,8 +1,17 @@
 const {DB_URL,DB_USER,DB_PASS}=process.env, DB_CLIENT=require('mysql')
 const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, cache=new Map(), states=new Map(), state_headers=new Map()
+//cylia.songs_v18
+//song_id,title,artist,album,track_no,length,date,genre         | varchar(35)           | YES  |     | NULL    |                |
+/*| isrc          | varchar(40)           | YES  |     | NULL    |                |
+| rejected      | tinyint(4)            | YES  |     | 0       |                |
+| fingerprinted | tinyint(4)            | YES  |     | 0       |                |
+| file_sha1     | binary(20)            | NO   | UNI | NULL    |                |
+| song_feats    | mediumint(8) unsigned | YES  |     | 0       |                |
+| feats_logged  | mediumint(8) unsigned | YES  |     | 0       |                |
+| max_dB*/
 
 let deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
-deviceEventLogs.connect() //eventIndex,sourceTimeStamp,recogTimeStamp,sourceIndex,song_id,tm,tc,fm,fc,fMSE,tMSE,tinliers,finliers,samplePeriod,score,db,version,isNew
+deviceEventLogs.connect() //eventIndex,sourceTimestamp,recogTimestamp,sourceIndex,song_id,tm,tc,fm,fc,fMSE,tMSE,tinliers,finliers,samplePeriod,score,db,version,isNew
 deviceEventLogs.on('error',function(){
   deviceEventLogs=DB_CLIENT.createConnection({...db_opts,database:'deviceEventLogs'})
   deviceEventLogs.connect()
@@ -36,7 +45,8 @@ async function query(q,db){
 function eventQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
-  return `select * from \`${id}\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
+  //return `select * from \`${id}\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
+  return `SELECT ds.eventIndex as eventIndex, ds.song_id as song_id, ds.sourceIndex as sourceIndex, ds.sourceTimestamp as sourceTimestamp, s.title, s.artist, s.album, s.genre, (tinliers/6*finliers/50) as score from deviceEventLogs.\`${id}\` as ds JOIN songs_v18 as s on s.song_id=ds.song_id ORDER BY ds.sourceTimestamp DESC;`
 }
 function summaryQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
