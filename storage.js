@@ -55,7 +55,7 @@ async function update(record,key){
   const events=await query(eventQueryString(box_id,start,end))
   const summaries=await query(summaryQueryString(box_id,start,end))
   //if(!record.events) console.log(eventQueryString(box_id,start,end));
-  if(!record.summaries) console.log(summaryQueryString(box_id,start,end));
+  //if(!record.summaries) console.log(summaryQueryString(box_id,start,end));
   record.events ||= [];
   record.summaries ||= [];
   for(let i=record.events.length;i<events.length;i++){
@@ -63,7 +63,7 @@ async function update(record,key){
     record.events[i].sourceTimestamp -= 0; //convert date value to long int
     record.events[i].recogTimestamp -= 0; //convert date value to long int
   }
-  for(let i=0;i<record.summaries.length;i++){
+  for(let i=record.summaries.length;i<summaries.length;i++){
     record.summaries[i] = summaries[i];
     record.summaries[i].timestamp -= 0; //convert date value to long int
   }
