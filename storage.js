@@ -32,7 +32,7 @@ function eventQueryString(id,start,end){
   let sql_start=`SELECT MAX(timestamp) from deviceEventSummaryLogs.\`${id}\` where timestamp <= '${ev_start}'`
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
   //return `select * from \`${id}\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
-  return `SELECT ds.eventIndex as eventIndex, ds.song_id as song_id, ds.sourceIndex as sourceIndex, ds.sourceTimestamp as sourceTimestamp, s.title, s.artist, s.album, s.genre, (tinliers/6*finliers/50) as score FROM deviceEventLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE sourceTimestamp BETWEEN (${sql_start}) and '${sql_end}' ORDER BY ds.sourceTimestamp DESC;`
+  return `SELECT ds.eventIndex as eventIndex, ds.song_id as song_id, ds.sourceIndex as sourceIndex, ds.sourceTimestamp as sourceTimestamp, ds.recogTimestamp as recogTimestamp, s.title, s.artist, s.album, s.genre, (tinliers/6*finliers/50) as score FROM deviceEventLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE sourceTimestamp BETWEEN (${sql_start}) and '${sql_end}' ORDER BY ds.sourceTimestamp DESC;`
 }
 function summaryQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
