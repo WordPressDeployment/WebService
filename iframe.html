@@ -51,17 +51,26 @@
 </head>
 <body>
     <nav id="state"></nav>
-    <table id="device-data">
+    <table id="device_data">
         <tr>
+            <th>Status</th>
             <th>songID</th>
             <th>Title</th>
             <th>Artist</th>
             <th>Start Time</th>
             <th>Time Played</th>
         </tr>
+        <tr id="device_guessing">
+            <td>Pending...</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
     </table>
     <script>
-        let nav=document.getElementById('state')
+        let nav=document.getElementById('state'), firstrow=document.getElementById('device_guessing'), tbody=(document.getElementById('device_data')).children[0]
         function box_state(state){
             if(!state||state.offline){
               nav.className="offline";
@@ -72,15 +81,34 @@
               nav.innerText="BOX IS ONLINE";
             }
         }
-        //document.querySelector('.left');
-        //document.querySelector('.right');
+        function create(type='div',text=''){
+            let elem=document.createElement(type);
+            elem.innerText=text;
+            return elem;
+        }
+
 
         window.onload = async function () {
+            let summaryLength=0
             window.boxes = {}
             const uri = `ws${location.protocol[4] === 's' ? 's' : ''}://` + location.host;
             const token = atob(location.pathname.substring(1));
             await connect(uri, token, boxes);
-            setInterval(_=>box_state(boxes.state),200)
+            setInterval(function(){
+                box_state(boxes.state)
+                for(let i=summaryLength;i<(boxes.summaries?.length)||0;i++){
+                    let td=tbody.insertRow(2)
+                    td.append(
+                        create('td','Resolved'),
+                        create('td',boxes.summaries[i].song_id),
+                        create('td',boxes.summaries[i].title),
+                        create('td',boxes.summaries[i].artist),
+                        create('td',new Date(boxes.summaries[i].timestamp)),
+                        create('td',boxes.summaries[i].seconds+" seconds")
+                    )
+                }
+                summaryLength = (boxes.summaries?.length)||0;
+            },200)
         };
     </script>
 </body>
