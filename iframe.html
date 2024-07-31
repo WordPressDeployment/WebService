@@ -70,7 +70,9 @@
         </tr>
     </table>
     <script>
-        let nav=document.getElementById('state'), firstrow=document.getElementById('device_guessing'), tbody=(document.getElementById('device_data')).children[0]
+        let nav=document.getElementById('state')
+        let tbody=(document.getElementById('device_data')).children[0]
+        let firstrow=document.getElementById('device_guessing').children
         function box_state(state){
             if(!state||state.offline){
               nav.className="offline";
@@ -95,8 +97,9 @@
             const token = atob(location.pathname.substring(1));
             await connect(uri, token, boxes);
             setInterval(function(){
-                box_state(boxes.state)
-                for(let i=summaryLength;i<(boxes.summaries?.length)||0;i++){
+                box_state(boxes.state) //box state handling on this line
+                //handle summaries start
+                for(let i=summaryLength;i<(boxes.summaries?.length)||0;i++){ //for all new summaries
                     let td=tbody.insertRow(2)
                     td.append(
                         create('td','Resolved'),
@@ -108,6 +111,21 @@
                     )
                 }
                 summaryLength = (boxes.summaries?.length)||0;
+                //handle summaries stop
+                if(!(boxes.events?.length)) return null; //nothing in boxes.events
+                //handle events(thinking row) start
+                let {sourceTimestamp}=boxes.events[0], columns=['','','']
+                for(let i=0;boxes.events[i].sourceTimestamp===sourceTimestamp;i++){ //for all events with the latest time
+                    columns[0] += boxes.events[i].song_id + "\n"
+                    columns[1] += boxes.events[i].title + "\n"
+                    columns[2] += boxes.events[i].artist + "\n"
+                }
+                for(let i=0;i<columns.length;i++){
+                    columns[i]=columns[i].trim();
+                    if(columns[i]!==firstrow[i+1].innerText)
+                        firstrow[i+1].innerText=columns[i];
+                }
+                //handle events(thinking row) stop
             },200)
         };
     </script>
