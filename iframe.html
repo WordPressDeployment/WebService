@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>mCylia Boxes</title>
-    <script src="https://cdn.jsdelivr.net/npm/webject@1.4.8/for_browser.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/webject@latest/for_browser.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -106,7 +106,7 @@
                         create('td',boxes.summaries[i].song_id),
                         create('td',boxes.summaries[i].title),
                         create('td',boxes.summaries[i].artist),
-                        create('td',new Date(boxes.summaries[i].timestamp)),
+                        create('td',new Date(boxes.summaries[i].timestamp).toString().split(' GMT')[0]),
                         create('td',boxes.summaries[i].seconds+" seconds")
                     )
                 }
