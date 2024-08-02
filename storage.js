@@ -56,13 +56,18 @@ async function update(record,key){
   const summaries=await query(summaryQueryString(box_id,start,end))
   if(!record.events) console.log(eventQueryString(box_id,start,end));
   if(!record.summaries) console.log(summaryQueryString(box_id,start,end));
-  record.events ||= [];
-  record.summaries ||= [];
-  for(let i=record.events.length;i<events.length;i++){
-    record.events[i] = events[i];
-    record.events[i].sourceTimestamp -= 0; //convert date value to long int
-    record.events[i].recogTimestamp -= 0; //convert date value to long int
+  for(let i=0;i<events.length;i++){
+    if(events[i].sourceTimestamp < events[i].sourceTimestamp){
+      //the query gives everything in the event after the last summary
+      //however from that, only those with the latest sourceTimestamp are required
+      events.length=i;
+      break;
+    }
+    events[i].sourceTimestamp -= 0; //convert date value to long int
+    events[i].recogTimestamp -= 0; //convert date value to long int
   }
+  record.events = events;
+  record.summaries ||= [];
   for(let i=record.summaries.length;i<summaries.length;i++){
     record.summaries[i] = summaries[i];
     record.summaries[i].timestamp -= 0; //convert date value to long int
