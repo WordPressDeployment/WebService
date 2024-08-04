@@ -94,6 +94,7 @@ async function get_box_info(box_id,time_range){
   if(!box_id.startsWith('mCylia-')) return {}; //box-id validation
   let [start,end]=time_range.split(';')
   if(!start || !end) return {};
+  if(isNaN(start) || isNaN(end)) return {};
   if(Number(start)>=Number(end)) return {};
   //console.log({box_id,times: parseTimes(time_range).map(a=>new Date(a).toGMTString()) }) //show everything
   let key=JSON.stringify([box_id,time_range]), record=cache.get(key)
