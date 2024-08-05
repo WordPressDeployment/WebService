@@ -11,13 +11,24 @@ npm install
 ```
 
 ## API
-The entire webservice's purpose is to return a link that will display real time data of an mcylia box.
+### Prelude
+The entire webservice's purpose is to return a webject token that will send real time data of an mcylia box. To keep formatting until the client, it is encoded in base64 when sent to the TrustedEntity however
+#### Specific Event ID
+
 ```js
-TrustedEntity--({[AUTH_HEAD]:AUTH_VALUE, 'mcylia-box':some-box-id})-->WebService
-WebService--(some-one-use-token)-->TrustedEntity
-TrustedEntity--('WebServiceURL/'+some-one-use-token)-->Client
+TrustedEntity--({[AUTH_HEAD]:AUTH_VALUE, 'mcylia-box':some-box-id, 'start-and-end':`${longint_s};${longint_e}`})-->WebService
+WebService--(weird_base64_str)-->TrustedEntity
+TrustedEntity--(load iframe of `https://${WebServiceURL}/${weird_base64_str}`)-->Client
 ```
-The works when only the `WebService` and the `TrustedEntity` know the contents of these secret *AUTH_HEAD* and *AUTH_VALUE* variables
+The works when only the `WebService` and the `TrustedEntity` know the contents of these secret *AUTH_HEAD* and *AUTH_VALUE* variables<br>
+Also, the `longint_s` and `longint_e` would be the timestamps for the event _start_ and _event_ end respectively
+#### Entire Listing Page
+```js
+TrustedEntity--({[AUTH_HEAD]:AUTH_VALUE, 'state_activity':some-box-ids-joined-by-semicolon`})-->WebService
+WebService--(btoa(some-one-use-token))-->TrustedEntity
+TrustedEntity--(await connect(`wss://${WebServiceURL}`,atob(weird_base64_str)))-->Client
+```
+The also works when only the `WebService` and the `TrustedEntity` know the contents of these secret *AUTH_HEAD* and *AUTH_VALUE* variables
 
 ## Environment Variables
 There are some environment variables required to be set for this repository to work
