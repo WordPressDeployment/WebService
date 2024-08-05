@@ -124,8 +124,8 @@
                     columns[1].appendChild(artist)
                 }
                 for(let i=0;i<columns.length;i++){
-                    if(columns[i].innerText!==COLUMNS[i].innerText){
-                        window.xx_3=[columns[i].innerText,COLUMNS[i].innerText]
+                    //apparently, li elements appended to a ul have endlines only if the ul is in the document's body
+                    if(columns[i].innerText!==COLUMNS[i].innerText.split('\n').join('')){
                         COLUMNS[i].innerHTML=''; //empty the children the actual uls already have
                         COLUMNS[i].append(...columns[i].children);
                     }
