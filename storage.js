@@ -57,7 +57,7 @@ async function update(record,key){
   if(!record.events) console.log(eventQueryString(box_id,start,end));
   if(!record.summaries) console.log(summaryQueryString(box_id,start,end));
   for(let i=0;i<events.length;i++){
-    if(events[i].sourceTimestamp < events[i].sourceTimestamp){
+    if(events[i].sourceTimestamp < events[0].sourceTimestamp){
       //the query gives everything in the event after the last summary
       //however from that, only those with the latest sourceTimestamp are required
       events.length=i;
