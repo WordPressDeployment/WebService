@@ -16,15 +16,17 @@
         
     
         table {
-          font-family: arial, sans-serif;
-          border-collapse: collapse;
-          width: 100%;
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
         }
 
         td, th {
-          border: 1px solid #dddddd;
-          text-align: left;
-          padding: 8px;
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
 
         /*tr:nth-child(even) {
@@ -38,33 +40,35 @@
             50% { background-color: #5aaf60; }
             100% { background-color: #4CAF50; }
         }
-      nav{
-        color: white;
-        padding:0px 0px;
-        height: 5%;
-        text-align: center;
-        font-size: xx-large;
-      }
-      .online{background-color: lightgreen;}
-      .offline{background-color: orangered;}
+        nav{
+            color: white;
+            padding:0px 0px;
+            height: 5%;
+            text-align: center;
+            font-size: xx-large;
+        }
+        .online{background-color: lightgreen;}
+        .offline{background-color: orangered;}
     </style>
 </head>
 <body>
     <nav id="state"></nav>
     <table id="device_data">
+        <colgroup>
+            <col style="width: 40%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+            <col style="width: 20%;">
+        </colgroup>
         <tr>
-            <th>Status</th>
-            <th>songID</th>
             <th>Title</th>
             <th>Artist</th>
             <th>Start Time</th>
-            <th>Time Played</th>
+            <th>Time Played (Seconds)</th>
         </tr>
-        <tr id="device_guessing">
-            <td>Pending...</td>
-            <td></td>
-            <td></td>
-            <td></td>
+        <tr id="device_guessing" title="latest list of possible songs being played">
+            <td><ul id="titles"></ul></td>
+            <td><ul id="artists"></ul></td>
             <td></td>
             <td></td>
         </tr>
@@ -73,6 +77,7 @@
         let nav=document.getElementById('state')
         let tbody=(document.getElementById('device_data')).children[0]
         let firstrow=document.getElementById('device_guessing').children
+        let titles=document.getElementById('titles'), artists=document.getElementById('artists')
         function box_state(state){
             if(!state||state.offline){
               nav.className="offline";
@@ -91,7 +96,7 @@
 
 
         window.onload = async function () {
-            let summaryLength=0
+            let summaryLength=0;
             window.boxes = {}
             const uri = `ws${location.protocol[4] === 's' ? 's' : ''}://` + location.host;
             const token = atob(location.pathname.substring(1));
@@ -100,10 +105,10 @@
                 box_state(boxes.state) //box state handling on this line
                 //handle summaries start
                 for(let i=summaryLength;i<(boxes.summaries?.length)||0;i++){ //for all new summaries
-                    let td=tbody.insertRow(2)
-                    td.append(
-                        create('td','Resolved'),
-                        create('td',boxes.summaries[i].song_id),
+                    let tr=tbody.insertRow(2), title=create('td',boxes.summaries[i].title), artist=create('td',boxes.summaries[i].artist)
+                    title.title="song id: "+boxes.summaries[i].song_id
+                    artist.title="song id: "+boxes.summaries[i].song_id
+                    tr.append(
                         create('td',boxes.summaries[i].title),
                         create('td',boxes.summaries[i].artist),
                         create('td',new Date(boxes.summaries[i].timestamp).toString().split(' GMT')[0]),
@@ -114,16 +119,18 @@
                 //handle summaries stop
                 if(!(boxes.events?.length)) return null; //nothing in boxes.events
                 //handle events(thinking row) start
-                let {sourceTimestamp}=boxes.events[0], columns=['','','']
+                let {sourceTimestamp}=boxes.events[0], columns=[create('ul'),create('ul')], COLUMNS=[titles,artists]
+                //columns is what is evaluated in this interval, COLUMNS is what exists already and is being checked against
                 for(let i=0;boxes.events[i].sourceTimestamp===sourceTimestamp;i++){ //for all events with the latest time
-                    columns[0] += boxes.events[i].song_id + "\n"
-                    columns[1] += boxes.events[i].title + "\n"
-                    columns[2] += boxes.events[i].artist + "\n"
+                    let title=create('li',boxes.events[i].title), artist=create('li',boxes.events[i].artist)
+                    title.title="song id: "+boxes.events[i].song_id
+                    artist.title="song id: "+boxes.events[i].song_id
+                    columns[0].appendChild(title)
+                    columns[1].appendChild(artist)
                 }
                 for(let i=0;i<columns.length;i++){
-                    columns[i]=columns[i].trim();
-                    if(columns[i]!==firstrow[i+1].innerText)
-                        firstrow[i+1].innerText=columns[i];
+                    if(columns[i].innerText!==COLUMNS[i].innerText)
+                        COLUMNS[i].append(...columns[i].children);
                 }
                 //handle events(thinking row) stop
             },200)
