@@ -129,9 +129,10 @@
                     columns[1].appendChild(artist)
                 }
                 for(let i=0;i<columns.length;i++){
-                    console.log(columns[i].innerText,COLUMNS[i].innerText)
-                    if(columns[i].innerText!==COLUMNS[i].innerText)
+                    if(columns[i].innerText!==COLUMNS[i].innerText){
+                        COLUMNS[i].innerHTML=''; //empty the children the actual uls already have
                         COLUMNS[i].append(...columns[i].children);
+                    }
                 }
                 //handle events(thinking row) stop
             },200)
