@@ -119,9 +119,9 @@
                 //handle summaries stop
                 if(!(boxes.events?.length)) return null; //nothing in boxes.events
                 //handle events(thinking row) start
-                let {sourceTimestamp}=boxes.events[0], columns=[create('ul'),create('ul')], COLUMNS=[titles,artists]
+                let {sourceTimestamp}=boxes.events[0], columns=[create('ul'),create('ul')], COLUMNS=[titles,artists], i=0
                 //columns is what is evaluated in this interval, COLUMNS is what exists already and is being checked against
-                for(let i=0;boxes.events[i].sourceTimestamp===sourceTimestamp;i++){ //for all events with the latest time
+                for(i=0;boxes.events[i].sourceTimestamp===sourceTimestamp;i++){ //for all events with the latest time
                     let title=create('li',boxes.events[i].title), artist=create('li',boxes.events[i].artist)
                     title.title="song id: "+boxes.events[i].song_id
                     artist.title="song id: "+boxes.events[i].song_id
