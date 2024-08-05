@@ -109,19 +109,19 @@
                     title.title="song id: "+boxes.summaries[i].song_id
                     artist.title="song id: "+boxes.summaries[i].song_id
                     tr.append(
-                        create('td',boxes.summaries[i].title),
-                        create('td',boxes.summaries[i].artist),
+                        title,
+                        artist,
                         create('td',new Date(boxes.summaries[i].timestamp).toString().split(' GMT')[0]),
-                        create('td',boxes.summaries[i].seconds+" seconds")
+                        create('td',boxes.summaries[i].seconds)
                     )
                 }
                 summaryLength = (boxes.summaries?.length)||0;
                 //handle summaries stop
                 if(!(boxes.events?.length)) return null; //nothing in boxes.events
                 //handle events(thinking row) start
-                let {sourceTimestamp}=boxes.events[0], columns=[create('ul'),create('ul')], COLUMNS=[titles,artists], i=0
+                let {sourceTimestamp}=boxes.events[0], columns=[create('ul'),create('ul')], COLUMNS=[titles,artists]
                 //columns is what is evaluated in this interval, COLUMNS is what exists already and is being checked against
-                for(i=0;boxes.events[i].sourceTimestamp===sourceTimestamp;i++){ //for all events with the latest time
+                for(let i=0;i<boxes.events.length && boxes.events[i].sourceTimestamp===sourceTimestamp;i++){ //for all events with the latest time
                     let title=create('li',boxes.events[i].title), artist=create('li',boxes.events[i].artist)
                     title.title="song id: "+boxes.events[i].song_id
                     artist.title="song id: "+boxes.events[i].song_id
