@@ -46,8 +46,8 @@
     <nav id="state"></nav>
     <table id="device_data">
         <colgroup>
-            <col style="width: 40%;">
-            <col style="width: 20%;">
+            <col style="width: 30%;">
+            <col style="width: 30%;">
             <col style="width: 20%;">
             <col style="width: 20%;">
         </colgroup>
@@ -125,9 +125,18 @@
                 }
                 for(let i=0;i<columns.length;i++){
                     if(columns[i].innerText!==COLUMNS[i].innerText){
+                        window.xx_3=[columns[i].innerText,COLUMNS[i].innerText]
                         COLUMNS[i].innerHTML=''; //empty the children the actual uls already have
                         COLUMNS[i].append(...columns[i].children);
                     }
+                }
+                let columnLength = COLUMNS[0].children.length
+                //loop below is to even out the heights of each li in the different columns
+                for(let i=0;i<columnLength;i++){
+                    let left=COLUMNS[0].children[i], right=COLUMNS[1].children[i]
+                    let max=Math.max(left.clientHeight,right.clientHeight)
+                    left.style.height=max+'px'
+                    right.style.height=max+'px'
                 }
                 //handle events(thinking row) stop
             },200)
