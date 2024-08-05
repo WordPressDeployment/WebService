@@ -38,7 +38,7 @@ function summaryQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
   //return `select * from \`${id}\` where timestamp between '${sql_start}' and '${sql_end}';`
-  return `SELECT ds.eventIndex as eventIndex, ds.sysUUID as sysUUID, ds.song_id as song_id, ds.score as score, ds.timestamp as timestamp, s.title as title, s.artist as artist, s.album as album, s.genre as genre, (ds.duration*ds.delta) as seconds FROM deviceEventSummaryLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE  timestamp BETWEEN '${sql_start}' and '${sql_end}' ORDER BY ds.timestamp ASC;`
+  return `SELECT ds.eventIndex as eventIndex, ds.sysUUID as sysUUID, ds.song_id as song_id, ds.score as score, ds.timestamp as timestamp, s.title as title, s.artist as artist, s.album as album, s.genre as genre, (ds.duration*ds.delta) as seconds FROM deviceEventSummaryLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE  timestamp BETWEEN '${sql_start}' and '${sql_end}' ORDER BY ds.timestamp DESC limit 20;`
 }
 function stateQuery(id){
   return `select * from devices.stateActivity where sourceTimestamp >= now(6) - interval 5 minute and sysUUID='${id}';`
@@ -66,12 +66,10 @@ async function update(record,key){
     events[i].sourceTimestamp -= 0; //convert date value to long int
     events[i].recogTimestamp -= 0; //convert date value to long int
   }
+  summaries.reverse()
+  for(let i=0;i<summaries.length;i++) summaries[i].timestamp-=0;
   record.events = events;
-  record.summaries ||= [];
-  for(let i=record.summaries.length;i<summaries.length;i++){
-    record.summaries[i] = summaries[i];
-    record.summaries[i].timestamp -= 0; //convert date value to long int
-  }
+  record.summaries = summaries;
   if(end<=Date.now()) record.state={offline:true}; //claim it is offline if the event isn't current
   else record.state=(await query(stateQuery(box_id)))[0] || {offline:true}; //query exists or assumed offline
   return record

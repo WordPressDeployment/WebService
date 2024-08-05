@@ -96,7 +96,7 @@
 
 
         window.onload = async function () {
-            let summaryLength=0;
+            let summaryString='[]';
             window.boxes = {}
             const uri = `ws${location.protocol[4] === 's' ? 's' : ''}://` + location.host;
             const token = atob(location.pathname.substring(1));
@@ -104,18 +104,22 @@
             setInterval(function(){
                 box_state(boxes.state) //box state handling on this line
                 //handle summaries start
-                for(let i=summaryLength;i<(boxes.summaries?.length)||0;i++){ //for all new summaries
-                    let tr=tbody.insertRow(2), title=create('td',boxes.summaries[i].title), artist=create('td',boxes.summaries[i].artist)
-                    title.title="song id: "+boxes.summaries[i].song_id
-                    artist.title="song id: "+boxes.summaries[i].song_id
-                    tr.append(
-                        title,
-                        artist,
-                        create('td',new Date(boxes.summaries[i].timestamp).toString().split(' GMT')[0]),
-                        create('td',boxes.summaries[i].seconds)
-                    )
+                if(JSON.stringify(boxes.summaries)!==summaryString){
+                    let garbage=tbody.children;
+                    for(let i=2;i<garbage.length;i++) tbody.removeChild(garbage[i]); //clear table
+                    for(let i=0;i<(boxes.summaries?.length)||0;i++){ //write or rewrite summaries
+                        let tr=tbody.insertRow(2), title=create('td',boxes.summaries[i].title), artist=create('td',boxes.summaries[i].artist)
+                        title.title="song id: "+boxes.summaries[i].song_id
+                        artist.title="song id: "+boxes.summaries[i].song_id
+                        tr.append(
+                            title,
+                            artist,
+                            create('td',new Date(boxes.summaries[i].timestamp).toString().split(' GMT')[0]),
+                            create('td',boxes.summaries[i].seconds)
+                        )
+                    }
+                    summaryString = JSON.stringify(boxes.summaries);
                 }
-                summaryLength = (boxes.summaries?.length)||0;
                 //handle summaries stop
                 if(!(boxes.events?.length)) return null; //nothing in boxes.events
                 //handle events(thinking row) start
