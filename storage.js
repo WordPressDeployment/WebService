@@ -38,7 +38,7 @@ function summaryQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
   //return `select * from \`${id}\` where timestamp between '${sql_start}' and '${sql_end}';`
-  return `SELECT ds.eventIndex as eventIndex, ds.sysUUID as sysUUID, ds.song_id as song_id, ds.score as score, ds.timestamp as timestamp, s.title as title, s.artist as artist, s.album as album, s.genre as genre, (ds.duration*ds.delta) as seconds FROM deviceEventSummaryLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE  timestamp BETWEEN '${sql_start}' and '${sql_end}' ORDER BY ds.timestamp DESC;`
+  return `SELECT ds.eventIndex as eventIndex, ds.sysUUID as sysUUID, ds.song_id as song_id, ds.score as score, ds.timestamp as timestamp, s.title as title, s.artist as artist, s.album as album, s.genre as genre, (ds.duration*ds.delta) as seconds FROM deviceEventSummaryLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE  timestamp BETWEEN '${sql_start}' and '${sql_end}' ORDER BY ds.timestamp DESC limit 20;`
 }
 function stateQuery(id){
   return `select * from devices.stateActivity where sourceTimestamp >= now(6) - interval 5 minute and sysUUID='${id}';`
