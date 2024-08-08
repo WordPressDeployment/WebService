@@ -12,7 +12,7 @@ npm install
 
 ## API
 ### Prelude
-The entire webservice's purpose is to return a webject token that will send real time data of an mcylia box. To keep formatting until the client, it is encoded in base64 when sent to the TrustedEntity however
+The entire webservice's purpose is to return a webject token that will send real-time data of an _mcylia box_. To maintain formatting until it reaches the client, the token is encoded in base64 when sent to the _TrustedEntity_ which is the _WordPress domain_ it communicates with
 #### Specific Event ID
 
 ```js
@@ -20,7 +20,7 @@ TrustedEntity--({[AUTH_HEAD]:AUTH_VALUE, 'mcylia-box':some-box-id, 'start-and-en
 WebService--(weird_base64_str)-->TrustedEntity
 TrustedEntity--(load iframe of `https://${WebServiceURL}/${weird_base64_str}`)-->Client
 ```
-The works when only the `WebService` and the `TrustedEntity` know the contents of these secret *AUTH_HEAD* and *AUTH_VALUE* variables<br>
+The works only when the `WebService` and the `TrustedEntity` know the contents of these secret *AUTH_HEAD* and *AUTH_VALUE* variables<br>
 Also, the `longint_s` and `longint_e` would be the timestamps for the event _start_ and _event_ end respectively
 #### Entire Listing Page
 ```js
