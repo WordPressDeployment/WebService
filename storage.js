@@ -1,4 +1,4 @@
-const {DB_URL,DB_USER,DB_PASS}=process.env, DB_CLIENT=require('mysql')
+const {DB_URL,DB_USER,DB_PASS}=process.env, DB_CLIENT=require('mysql'), {escape}=require('./sqlstring')
 const db_opts={host:DB_URL,user:DB_USER,password:DB_PASS}, cache=new Map(), states=new Map(), state_headers=new Map()
 //cylia.songs_v18
 //song_id,title,artist,album,track_no,length,date,genre,isrc,rejected,fingerprinted,file_sha1,song_feats,feats_logged,max_dB
@@ -30,18 +30,18 @@ async function query(q){
 function eventQueryString(id,start,end){
   //let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
-  let sql_start=`SELECT MAX(timestamp) from deviceEventSummaryLogs.\`${id}\` where timestamp <= '${sql_end}'`
-  //return `select * from \`${id}\` where sourceTimestamp between '${sql_start}' and '${sql_end}';`
-  return `SELECT ds.eventIndex as eventIndex, ds.song_id as song_id, ds.sourceIndex as sourceIndex, ds.sourceTimestamp as sourceTimestamp, ds.recogTimestamp as recogTimestamp, s.title as title, s.artist as artist, s.album as album, s.genre as genre, (tinliers/6*finliers/50) as score FROM deviceEventLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE sourceTimestamp BETWEEN (${sql_start}) and '${sql_end}' ORDER BY ds.sourceTimestamp DESC;`
+  let sql_start=`SELECT MAX(timestamp) from deviceEventSummaryLogs.\`${escape(id)}\` where timestamp <= '${escape(sql_end)}'`
+  //return `select * from \`${escape(id)}\` where sourceTimestamp between '${escape(sql_start)}' and '${escape(sql_end)}';`
+  return `SELECT ds.eventIndex as eventIndex, ds.song_id as song_id, ds.sourceIndex as sourceIndex, ds.sourceTimestamp as sourceTimestamp, ds.recogTimestamp as recogTimestamp, s.title as title, s.artist as artist, s.album as album, s.genre as genre, (tinliers/6*finliers/50) as score FROM deviceEventLogs.\`${escape(id)}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE sourceTimestamp BETWEEN (${escape(sql_start)}) and '${escape(sql_end)}' ORDER BY ds.sourceTimestamp DESC;`
 }
 function summaryQueryString(id,start,end){
   let sql_start=new Date(start).toISOString().replace('T', ' ').replace('Z', '')
   let sql_end=new Date(end).toISOString().replace('T', ' ').replace('Z', '')
-  //return `select * from \`${id}\` where timestamp between '${sql_start}' and '${sql_end}';`
-  return `SELECT ds.eventIndex as eventIndex, ds.sysUUID as sysUUID, ds.song_id as song_id, ds.score as score, ds.timestamp as timestamp, s.title as title, s.artist as artist, s.album as album, s.genre as genre, (ds.duration*ds.delta) as seconds FROM deviceEventSummaryLogs.\`${id}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE  timestamp BETWEEN '${sql_start}' and '${sql_end}' ORDER BY ds.timestamp DESC limit 20;`
+  //return `select * from \`${escape(id)}\` where timestamp between '${escape(sql_start)}' and '${escape(sql_end)}';`
+  return `SELECT ds.eventIndex as eventIndex, ds.sysUUID as sysUUID, ds.song_id as song_id, ds.score as score, ds.timestamp as timestamp, s.title as title, s.artist as artist, s.album as album, s.genre as genre, (ds.duration*ds.delta) as seconds FROM deviceEventSummaryLogs.\`${escape(id)}\` as ds JOIN cylia.songs_v18 as s on s.song_id=ds.song_id WHERE  timestamp BETWEEN '${escape(sql_start)}' and '${escape(sql_end)}' ORDER BY ds.timestamp DESC limit 20;`
 }
 function stateQuery(id){
-  return `select * from devices.stateActivity where sourceTimestamp >= now(6) - interval 5 minute and sysUUID='${id}';`
+  return `select * from devices.stateActivity where sourceTimestamp >= now(6) - interval 5 minute and sysUUID='${escape(id)}';`
 }
 function parseTimes(time_range){
   if(!time_range) return [0,0];
