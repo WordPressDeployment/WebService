@@ -117,7 +117,7 @@ async function get_state_info(header){
     }
     let record=states.get(ids[i])
     if(!record){
-      record=await update_states(ids[i],record)
+      record=await update_states(record,ids[i])
       states.set(ids[i],record)
     }
     state_info[i]=record
