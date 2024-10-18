@@ -21,8 +21,8 @@ const server=create_server(async function(req,res){
     await get_box_info(req.headers['mcylia-box'],req.headers['start-and-end'])
   //console.log(Object.keys(data),req.headers) //to toggle commented line for testing
   const token=webject.addToken(1,data)
-  webject.authTokens.get(token)._inactive=setTimeout(_=>webject.endToken(token),1e4)
-  //after 10 seconds without connecting, token is revoked
+  webject.authTokens.get(token)._inactive=setTimeout(_=>webject.endToken(token),1e5)
+  //after 100 seconds without connecting, token is revoked
   return res.end(btoa(token)) //so to access the link, it'd be webservice_site/what_was_returnedhere
 },8080)
 
@@ -33,8 +33,8 @@ webject.addListener("connect",function(ev){
 })
 webject.addListener("disconnect",function(ev){
   ev.unlock()
-  ev.token._inactive=setTimeout(_=>webject.endToken(ev.token.authToken),1e4)
-  //after 10 seconds without reconnecting, token is revoked
+  ev.token._inactive=setTimeout(_=>webject.endToken(ev.token.authToken),1e5)
+  //after 100 seconds without reconnecting, token is revoked
 })
 
 /*//ngrok block start
